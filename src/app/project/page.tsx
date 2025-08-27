@@ -28,7 +28,7 @@ const ProjectPage = () => {
 
         {/* Subtitle */}
         <p className="text-xl md:text-2xl text-gray-300 mb-8 leading-relaxed">
-          I'm working on adding my projects here soon.
+          I&apos;m working on adding my projects here soon.
           <br />
           <span className="text-blue-400 font-medium">Stay tuned for updates!</span>
         </p>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useAuth } from '@/contexts/AuthContext';
-import { Menu, Bell, Search, User, ChevronDown } from 'lucide-react';
+import { Menu, Bell, Search, ChevronDown } from 'lucide-react';
 
 interface TopbarProps {
   onToggleSidebar: () => void;

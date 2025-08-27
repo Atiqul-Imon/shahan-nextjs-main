@@ -23,7 +23,7 @@ const SnippetsPage = () => {
   useEffect(() => {
     const fetchSnippets = async () => {
       try {
-        const response = await apiClient.getSnippets();
+        const response = await apiClient.getSnippets() as Snippet[] | { data?: Snippet[] };
         if (Array.isArray(response)) {
           setSnippets(response);
         } else if (response.data && Array.isArray(response.data)) {
@@ -41,7 +41,7 @@ const SnippetsPage = () => {
   const handleDelete = async (snippetId: string) => {
     if (!window.confirm("Are you sure you want to delete this snippet?")) return;
     try {
-      const response = await apiClient.deleteSnippet(snippetId);
+      const response = await apiClient.deleteSnippet(snippetId) as { success?: boolean; message?: string };
       if (response.success) {
         setSnippets(snippets.filter((snippet) => snippet._id !== snippetId));
       } else {

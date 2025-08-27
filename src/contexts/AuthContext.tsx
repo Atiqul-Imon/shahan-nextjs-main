@@ -2,11 +2,18 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 
+interface User {
+  _id: string;
+  name: string;
+  email: string;
+  [key: string]: unknown;
+}
+
 interface AuthContextType {
   isLogin: boolean;
   isLoading: boolean;
-  user: any;
-  login: (token: string, userData: any) => void;
+  user: User | null;
+  login: (token: string, userData: User) => void;
   logout: () => void;
 }
 
@@ -15,7 +22,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLogin, setIsLogin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     // Only run on client side
@@ -42,7 +49,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(false);
   }, []);
 
-  const login = (token: string, userData: any) => {
+  const login = (token: string, userData: User) => {
     localStorage.setItem('accessToken', token);
     localStorage.setItem('user', JSON.stringify(userData));
     setIsLogin(true);

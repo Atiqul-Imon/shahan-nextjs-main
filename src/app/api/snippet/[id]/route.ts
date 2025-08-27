@@ -6,7 +6,7 @@ import { verifyAccessToken } from '@/lib/auth';
 // PUT update snippet
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
@@ -25,7 +25,8 @@ export async function PUT(
 
     const { title, content, language } = await request.json();
 
-    const snippet = await Snippet.findById(params.id);
+    const { id } = await params;
+    const snippet = await Snippet.findById(id);
     if (!snippet) {
       return NextResponse.json({
         success: false,
@@ -57,7 +58,7 @@ export async function PUT(
 // DELETE snippet
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
@@ -74,7 +75,8 @@ export async function DELETE(
       return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
     }
 
-    const snippet = await Snippet.findById(params.id);
+    const { id } = await params;
+    const snippet = await Snippet.findById(id);
     if (!snippet) {
       return NextResponse.json({
         success: false,
@@ -82,7 +84,7 @@ export async function DELETE(
       }, { status: 404 });
     }
 
-    await Snippet.findByIdAndDelete(params.id);
+    await Snippet.findByIdAndDelete(id);
 
     return NextResponse.json({
       success: true,

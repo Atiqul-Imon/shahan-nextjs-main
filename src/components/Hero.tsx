@@ -2,6 +2,7 @@
 
 import { FaSearch, FaDatabase, FaChartBar, FaGlobe, FaGithub, FaLinkedin, FaGoogle } from "react-icons/fa";
 import { Download, ArrowRight } from "lucide-react";
+import Image from "next/image";
 
 const Hero = () => {
   const downloadResume = () => {
@@ -161,7 +162,7 @@ const Hero = () => {
                     className={`group p-4 rounded-2xl transition-all duration-300 transform hover:scale-110 hover:shadow-glow ${social.bgColor} text-gray-100`}
                   >
                     {social.isImg ? (
-                      <img src={social.icon} alt={social.name} className="w-6 h-6 transition-transform duration-200 group-hover:rotate-12" />
+                      <Image src={social.icon} alt={social.name} width={24} height={24} className="transition-transform duration-200 group-hover:rotate-12" />
                     ) : (
                       <Icon size={24} className="transition-transform duration-200 group-hover:rotate-12" />
                     )}

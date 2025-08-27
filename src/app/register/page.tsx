@@ -45,7 +45,10 @@ const RegisterPage = () => {
     }
 
     try {
-      const response = await apiClient.register(formData.name, formData.email, formData.password);
+      const response = await apiClient.register(formData.name, formData.email, formData.password) as {
+        success?: boolean;
+        message?: string;
+      };
       
       if (response.success) {
         setMessage('Registration successful! Please login.');
@@ -59,9 +62,9 @@ const RegisterPage = () => {
         setError(true);
         setMessage(response.message || 'Registration failed');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(true);
-      setMessage(err.message || 'Something went wrong. Please try again.');
+      setMessage(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }

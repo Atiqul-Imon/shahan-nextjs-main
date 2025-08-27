@@ -46,9 +46,12 @@ const DashboardPage = () => {
           apiClient.getSnippets(),
         ]);
 
+        const projects = projectData as { data?: unknown[] };
+        const snippets = snippetData as unknown[];
+
         setStats({
-          projects: projectData.data?.length || 0,
-          snippets: snippetData?.length || 0,
+          projects: projects.data?.length || 0,
+          snippets: snippets?.length || 0,
         });
       } catch (err) {
         console.error("Error fetching dashboard data:", err);
@@ -86,7 +89,7 @@ const DashboardPage = () => {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-200">Dashboard Overview</h1>
-        <p className="text-gray-400 mt-1">Welcome back! Here's a summary of your content.</p>
+        <p className="text-gray-400 mt-1">Welcome back! Here&apos;s a summary of your content.</p>
       </div>
 
       {/* Stats Cards */}

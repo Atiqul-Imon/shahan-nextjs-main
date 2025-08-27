@@ -4,14 +4,21 @@ import Project from '@/models/Project';
 import { verifyAccessToken } from '@/lib/auth';
 import cloudinary from '@/lib/cloudinary';
 
+interface CloudinaryUploadResult {
+  secure_url: string;
+  public_id: string;
+  [key: string]: unknown;
+}
+
 // GET single project
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
-    const project = await Project.findById(params.id);
+    const { id } = await params;
+    const project = await Project.findById(id);
     
     if (!project) {
       return NextResponse.json({
@@ -36,7 +43,7 @@ export async function GET(
 // PUT update project
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
@@ -62,7 +69,8 @@ export async function PUT(
     const status = formData.get('status') as string;
     const images = formData.getAll('images') as File[];
 
-    const project = await Project.findById(params.id);
+    const { id } = await params;
+    const project = await Project.findById(id);
     if (!project) {
       return NextResponse.json({
         message: 'Project not found'
@@ -89,8 +97,8 @@ export async function PUT(
       });
 
       uploadedImages.push({
-        url: (result as any).secure_url,
-        public_id: (result as any).public_id
+        url: (result as CloudinaryUploadResult).secure_url,
+        public_id: (result as CloudinaryUploadResult).public_id
       });
     }
 
@@ -125,7 +133,7 @@ export async function PUT(
 // DELETE project
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
@@ -142,7 +150,8 @@ export async function DELETE(
       return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
     }
 
-    const project = await Project.findById(params.id);
+    const { id } = await params;
+    const project = await Project.findById(id);
     if (!project) {
       return NextResponse.json({
         message: 'Project not found'
@@ -156,7 +165,7 @@ export async function DELETE(
       }
     }
 
-    await Project.findByIdAndDelete(params.id);
+    await Project.findByIdAndDelete(id);
 
     return NextResponse.json({
       success: true,

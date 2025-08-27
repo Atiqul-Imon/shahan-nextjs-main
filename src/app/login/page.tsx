@@ -32,12 +32,21 @@ const LoginPage = () => {
     setError(false);
 
     try {
-      const response = await apiClient.login(formData.email, formData.password);
+      const response = await apiClient.login(formData.email, formData.password) as {
+        success?: boolean;
+        data?: {
+          accessToken: string;
+          email: string;
+          userId: string;
+        };
+        message?: string;
+      };
       
-      if (response.success) {
+      if (response.success && response.data) {
         login(response.data.accessToken, {
-          email: response.data.email,
-          userId: response.data.userId
+          _id: response.data.userId,
+          name: '',
+          email: response.data.email
         });
         
         setMessage('Login successful! Redirecting...');
@@ -48,9 +57,9 @@ const LoginPage = () => {
         setError(true);
         setMessage(response.message || 'Login failed');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(true);
-      setMessage(err.message || 'Something went wrong. Please try again.');
+      setMessage(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -112,7 +121,7 @@ const LoginPage = () => {
         </form>
 
         <p className="mt-4 text-center text-gray-400">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <Link href="/register" className="text-blue-400 hover:text-blue-300">
             Register here
           </Link>

@@ -14,7 +14,7 @@ export const generateRefreshToken = (userId: string) => {
 export const verifyAccessToken = (token: string) => {
   try {
     return jwt.verify(token, JWT_SECRET) as { userId: string };
-  } catch (error) {
+  } catch {
     return null;
   }
 };
@@ -22,7 +22,7 @@ export const verifyAccessToken = (token: string) => {
 export const verifyRefreshToken = (token: string) => {
   try {
     return jwt.verify(token, JWT_REFRESH_SECRET) as { userId: string };
-  } catch (error) {
+  } catch {
     return null;
   }
 }; 

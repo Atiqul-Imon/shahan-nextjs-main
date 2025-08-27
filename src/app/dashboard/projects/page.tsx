@@ -23,7 +23,7 @@ const ProjectsPage = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await apiClient.getProjects();
+        const response = await apiClient.getProjects() as { success?: boolean; data?: Project[] };
         if (response.success && response.data) {
           const sortedProjects = response.data.sort((a: Project, b: Project) => 
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -42,7 +42,7 @@ const ProjectsPage = () => {
   const handleDelete = async (projectId: string) => {
     if (!window.confirm("Are you sure you want to delete this project?")) return;
     try {
-      const response = await apiClient.deleteProject(projectId);
+      const response = await apiClient.deleteProject(projectId) as { success?: boolean; message?: string };
       if (response.success) {
         setProjects(projects.filter((project) => project._id !== projectId));
       } else {

@@ -2,6 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyAccessToken } from '@/lib/auth';
 import cloudinary from '@/lib/cloudinary';
 
+interface CloudinaryUploadResult {
+  secure_url: string;
+  public_id: string;
+  [key: string]: unknown;
+}
+
 export async function POST(request: NextRequest) {
   try {
     // Verify authentication
@@ -46,8 +52,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       data: {
-        url: (result as any).secure_url,
-        public_id: (result as any).public_id
+        url: (result as CloudinaryUploadResult).secure_url,
+        public_id: (result as CloudinaryUploadResult).public_id
       }
     });
 

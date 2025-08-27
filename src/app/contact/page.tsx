@@ -28,12 +28,12 @@ const ContactPage = () => {
     setError(false);
 
     try {
-      const response = await apiClient.sendContact(formData);
+      const response = await apiClient.sendContact(formData) as { message: string };
       setMessage(response.message);
       setFormData({ name: '', email: '', message: '' });
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(true);
-      setMessage(err.message || 'Something went wrong. Please try again.');
+      setMessage(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -78,7 +78,7 @@ const ContactPage = () => {
             {/* Contact Information */}
             <div>
               <h2 className="text-2xl font-bold text-gray-100 mb-8">
-                Let's Connect
+                Let&apos;s Connect
               </h2>
               
               <div className="space-y-6">

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { apiClient } from '@/lib/api';
 import { Code, Calendar, ArrowRight } from 'lucide-react';
 
@@ -23,8 +24,8 @@ const HomeProjectComponent = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await apiClient.getProjects();
-        setProjects(response.data.slice(0, 3)); // Show only first 3 projects
+        const response = await apiClient.getProjects() as { data?: Project[] };
+        setProjects(response.data?.slice(0, 3) || []); // Show only first 3 projects
       } catch (error) {
         console.error('Error fetching projects:', error);
       } finally {
@@ -91,9 +92,11 @@ const HomeProjectComponent = () => {
               >
                 <div className="relative">
                   {project.images && project.images.length > 0 ? (
-                    <img
+                    <Image
                       src={project.images[0].url}
                       alt={project.title}
+                      width={400}
+                      height={192}
                       className="w-full h-48 object-cover"
                     />
                   ) : (
