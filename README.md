@@ -240,4 +240,4 @@ For support or questions, please contact:
 
 ---
 
-Built with ❤️ by Shahan Ahmed
+Built with ❤️ by Shahan Ahmed | Last updated: October 2025
