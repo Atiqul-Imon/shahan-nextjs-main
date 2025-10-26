@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { apiClient } from '@/lib/api';
 import { ArrowLeft, Upload, X, Plus } from 'lucide-react';
 
@@ -257,9 +258,11 @@ const AddProjectPage = () => {
             <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
               {images.map((image, index) => (
                 <div key={index} className="relative">
-                  <img
+                  <Image
                     src={URL.createObjectURL(image)}
                     alt={`Preview ${index + 1}`}
+                    width={96}
+                    height={96}
                     className="w-full h-24 object-cover rounded-lg"
                   />
                   <button

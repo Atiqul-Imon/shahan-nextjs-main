@@ -3,6 +3,33 @@
 import React, { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 
+interface ModelMetrics {
+  name: string;
+  accuracy: number;
+  matches: number;
+  mismatches: number;
+  classes: {
+    mednarr: { precision: number; recall: number; f1: number; support: number };
+    nonMednarr: { precision: number; recall: number; f1: number; support: number };
+  };
+  confusionMatrix: { tp: number; fn: number; fp: number; tn: number };
+  errors: { mednarrToNonMednarr: number; nonMednarrToMednarr: number };
+}
+
+interface Dataset {
+  name: string;
+  totalSamples: number;
+  classDistribution: { mednarr: number; nonMednarr: number };
+  distilbert?: ModelMetrics;
+  longformer: ModelMetrics;
+}
+
+interface MetricRow {
+  metric: string;
+  DistilBERT?: string;
+  Longformer: string;
+}
+
 const ModelComparisonDashboard = () => {
   const [selectedView, setSelectedView] = useState('overview');
   const [selectedDataset, setSelectedDataset] = useState('dataset1');
@@ -70,7 +97,7 @@ const ModelComparisonDashboard = () => {
 
   const currentDataset = selectedDataset === 'dataset1' ? dataset1 : dataset2;
 
-  const determineWinner = (data: any) => {
+  const determineWinner = (data: Dataset) => {
     if (!data.distilbert || !data.longformer) return null;
     
     const distilbertFP = data.distilbert.errors.nonMednarrToMednarr;
@@ -83,7 +110,7 @@ const ModelComparisonDashboard = () => {
 
   const winner = determineWinner(currentDataset);
 
-  const prepareMetricsData = (data: any) => {
+  const prepareMetricsData = (data: Dataset): MetricRow[] => {
     if (!data.distilbert) {
       return [
         { metric: 'Accuracy', Longformer: (data.longformer.accuracy * 100).toFixed(2) },
@@ -117,7 +144,7 @@ const ModelComparisonDashboard = () => {
     ];
   };
 
-  const prepareRadarData = (data: any) => {
+  const prepareRadarData = (data: Dataset) => {
     if (!data.distilbert) {
       return [
         { metric: 'Accuracy', Longformer: data.longformer.accuracy * 100 },
@@ -151,7 +178,7 @@ const ModelComparisonDashboard = () => {
     ];
   };
 
-  const prepareErrorData = (data: any) => {
+  const prepareErrorData = (data: Dataset) => {
     if (!data.distilbert) {
       return [
         {
@@ -399,17 +426,17 @@ const ModelComparisonDashboard = () => {
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {overallMetrics.map((row, idx) => {
-                      const diff = currentDataset.distilbert 
-                        ? (parseFloat((row as any).DistilBERT) - parseFloat(row.Longformer)).toFixed(2)
+                      const diff = currentDataset.distilbert && row.DistilBERT
+                        ? (parseFloat(row.DistilBERT) - parseFloat(row.Longformer)).toFixed(2)
                         : null;
                       return (
                         <tr key={idx} className="hover:bg-gray-50">
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             {row.metric}
                           </td>
-                          {currentDataset.distilbert && (
+                          {currentDataset.distilbert && row.DistilBERT && (
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                              {(row as any).DistilBERT}%
+                              {row.DistilBERT}%
                             </td>
                           )}
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
+import Image from 'next/image';
 import { apiClient } from '@/lib/api';
 import { ArrowLeft, Upload, X, Plus } from 'lucide-react';
 
@@ -312,9 +313,11 @@ const EditProjectPage = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {project.images.map((image, index) => (
                 <div key={index} className="relative">
-                  <img
+                  <Image
                     src={image.url}
                     alt={`Project image ${index + 1}`}
+                    width={96}
+                    height={96}
                     className="w-full h-24 object-cover rounded-lg"
                   />
                 </div>
@@ -351,9 +354,11 @@ const EditProjectPage = () => {
             <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
               {newImages.map((image, index) => (
                 <div key={index} className="relative">
-                  <img
+                  <Image
                     src={URL.createObjectURL(image)}
                     alt={`New preview ${index + 1}`}
+                    width={96}
+                    height={96}
                     className="w-full h-24 object-cover rounded-lg"
                   />
                   <button
