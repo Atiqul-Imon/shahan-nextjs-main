@@ -100,11 +100,37 @@ class ApiClient {
     });
   }
 
-  // Contact endpoint
+  // Contact endpoints
   async sendContact(data: { name: string; email: string; message: string }) {
     return this.request('/contact', {
       method: 'POST',
       body: JSON.stringify(data),
+    });
+  }
+
+  async getContactMessages(params?: { status?: string; page?: number; limit?: number }) {
+    const searchParams = new URLSearchParams();
+    if (params?.status) searchParams.append('status', params.status);
+    if (params?.page) searchParams.append('page', params.page.toString());
+    if (params?.limit) searchParams.append('limit', params.limit.toString());
+    
+    return this.request(`/contact?${searchParams}`);
+  }
+
+  async getContactMessage(id: string) {
+    return this.request(`/contact/${id}`);
+  }
+
+  async updateContactMessage(id: string, data: { status?: string; adminNotes?: string }) {
+    return this.request(`/contact/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteContactMessage(id: string) {
+    return this.request(`/contact/${id}`, {
+      method: 'DELETE',
     });
   }
 

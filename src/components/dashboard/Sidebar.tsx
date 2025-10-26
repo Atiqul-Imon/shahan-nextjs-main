@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   Briefcase,
   Code,
+  MessageSquare,
   Settings,
   LogOut,
 } from 'lucide-react';
@@ -22,6 +23,7 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
     { to: '/dashboard', icon: LayoutDashboard, label: 'Overview' },
     { to: '/dashboard/projects', icon: Briefcase, label: 'Projects' },
     { to: '/dashboard/snippets', icon: Code, label: 'Snippets' },
+    { to: '/dashboard/messages', icon: MessageSquare, label: 'Messages' },
   ];
 
   const bottomNavItems = [

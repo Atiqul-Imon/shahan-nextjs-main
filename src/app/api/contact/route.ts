@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendContactEmail } from '@/lib/email';
+import connectDB from '@/lib/db';
+import Contact from '@/models/Contact';
 
 export async function POST(request: NextRequest) {
   try {
+    await connectDB();
+
     const { name, email, message } = await request.json();
 
     if (!name || !email || !message) {
@@ -21,8 +25,31 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
-    // Send email
-    await sendContactEmail({ name, email, message });
+    // Get client info
+    const ipAddress = request.headers.get('x-forwarded-for') || 
+                     request.headers.get('x-real-ip') || 
+                     'unknown';
+    const userAgent = request.headers.get('user-agent') || '';
+
+    // Save to database
+    const contactMessage = new Contact({
+      name,
+      email,
+      message,
+      ipAddress,
+      userAgent,
+      status: 'unread'
+    });
+
+    await contactMessage.save();
+
+    // Send email notification
+    try {
+      await sendContactEmail({ name, email, message });
+    } catch (emailError) {
+      console.error('Email sending failed:', emailError);
+      // Don't fail the request if email fails, message is still saved
+    }
 
     return NextResponse.json({
       success: true,
@@ -30,10 +57,81 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error sending contact email:', error);
+    console.error('Error processing contact form:', error);
     return NextResponse.json({
       success: false,
       message: 'Failed to send message. Please try again later.'
+    }, { status: 500 });
+  }
+}
+
+// GET endpoint for admin to fetch contact messages
+export async function GET(request: NextRequest) {
+  try {
+    await connectDB();
+
+    // This should be protected by authentication in a real app
+    const url = new URL(request.url);
+    const status = url.searchParams.get('status');
+    const page = parseInt(url.searchParams.get('page') || '1');
+    const limit = parseInt(url.searchParams.get('limit') || '10');
+    const skip = (page - 1) * limit;
+
+    // Build query
+    const query: Record<string, unknown> = {};
+    if (status && ['unread', 'read', 'replied'].includes(status)) {
+      query.status = status;
+    }
+
+    // Get messages with pagination
+    const messages = await Contact.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const total = await Contact.countDocuments(query);
+
+    // Get status counts
+    const statusCounts = await Contact.aggregate([
+      {
+        $group: {
+          _id: '$status',
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+
+    const counts = {
+      unread: 0,
+      read: 0,
+      replied: 0,
+      total: 0
+    };
+
+    statusCounts.forEach(item => {
+      counts[item._id as keyof typeof counts] = item.count;
+      counts.total += item.count;
+    });
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        messages,
+        pagination: {
+          page,
+          limit,
+          total,
+          pages: Math.ceil(total / limit)
+        },
+        counts
+      }
+    });
+
+  } catch (error) {
+    console.error('Error fetching contact messages:', error);
+    return NextResponse.json({
+      success: false,
+      message: 'Failed to fetch messages'
     }, { status: 500 });
   }
 } 
