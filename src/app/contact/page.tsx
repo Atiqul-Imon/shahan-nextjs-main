@@ -49,13 +49,13 @@ const ContactPage = () => {
     {
       icon: Phone,
       title: 'Phone',
-      value: '+880 1712-123456',
-      link: 'tel:+8801712123456'
+      value: '347 908 3925',
+      link: 'tel:13479083925'
     },
     {
       icon: MapPin,
       title: 'Location',
-      value: 'Dhaka, Bangladesh',
+      value: 'New York, USA',
       link: '#'
     }
   ];
