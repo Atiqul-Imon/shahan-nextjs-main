@@ -20,7 +20,17 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
     }
 
-    const snippets = await Snippet.find().sort({ createdAt: -1 });
+    // Add pagination and limit to prevent large data fetches
+    const url = new URL(request.url);
+    const limit = Math.min(parseInt(url.searchParams.get('limit') || '50'), 100); // Max 100, default 50
+    const skip = parseInt(url.searchParams.get('skip') || '0');
+
+    // Use lean() for better performance and limit results
+    const snippets = await Snippet.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();
     
     return NextResponse.json({
       success: true,

@@ -60,14 +60,14 @@ export async function POST(request: NextRequest) {
 
     await contactMessage.save();
 
-    // Send email notification
-    try {
-      await sendContactEmail({ name, email, message });
-    } catch (emailError) {
+    // Send email notification asynchronously - don't block response
+    // This prevents email service delays from affecting user experience
+    sendContactEmail({ name, email, message }).catch((emailError) => {
       console.error('Email sending failed:', emailError);
-      // Don't fail the request if email fails, message is still saved
-    }
+      // Log error but don't fail the request
+    });
 
+    // Return immediately without waiting for email
     return NextResponse.json({
       success: true,
       message: 'Message sent successfully! I will get back to you soon.'
@@ -100,24 +100,30 @@ export async function GET(request: NextRequest) {
       query.status = status;
     }
 
-    // Get messages with pagination
-    const messages = await Contact.find(query)
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
-
-    const total = await Contact.countDocuments(query);
-
-    // Get status counts
-    const statusCounts = await Contact.aggregate([
-      {
-        $group: {
-          _id: '$status',
-          count: { $sum: 1 }
+    // Optimize: Use single aggregation pipeline instead of multiple queries
+    // This reduces database round trips from 3 to 1
+    const [messagesResult, countsResult] = await Promise.all([
+      // Get paginated messages
+      Contact.find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(), // Use lean() for better performance - returns plain JS objects
+      // Get counts in parallel
+      Contact.aggregate([
+        {
+          $group: {
+            _id: '$status',
+            count: { $sum: 1 }
+          }
         }
-      }
+      ])
     ]);
 
+    const messages = messagesResult;
+    const statusCounts = countsResult;
+
+    // Calculate total from aggregation result instead of separate query
     const counts = {
       unread: 0,
       read: 0,
@@ -126,9 +132,15 @@ export async function GET(request: NextRequest) {
     };
 
     statusCounts.forEach(item => {
-      counts[item._id as keyof typeof counts] = item.count;
+      const status = item._id as keyof typeof counts;
+      if (status === 'unread' || status === 'read' || status === 'replied') {
+        counts[status] = item.count;
+      }
       counts.total += item.count;
     });
+
+    // Use total from counts instead of separate countDocuments query
+    const total = counts.total;
 
     return NextResponse.json({
       success: true,

@@ -11,10 +11,22 @@ interface CloudinaryUploadResult {
 }
 
 // GET all projects
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     await connectDB();
-    const projects = await Project.find({ status: 'published' }).sort({ createdAt: -1 });
+    
+    // Add pagination and limit to prevent large data fetches
+    const url = new URL(request.url);
+    const limit = Math.min(parseInt(url.searchParams.get('limit') || '50'), 100); // Max 100, default 50
+    const skip = parseInt(url.searchParams.get('skip') || '0');
+    
+    // Use lean() for better performance - returns plain JS objects instead of Mongoose documents
+    const projects = await Project.find({ status: 'published' })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean()
+      .select('title description technologies images liveUrl sourceUrl createdAt _id'); // Only select needed fields
     
     return NextResponse.json({
       success: true,
@@ -61,13 +73,13 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
-    // Upload images to Cloudinary
-    const uploadedImages = [];
-    for (const image of images) {
+    // Upload images to Cloudinary in parallel instead of sequentially
+    // This significantly reduces time when uploading multiple images
+    const uploadPromises = images.map(async (image) => {
       const bytes = await image.arrayBuffer();
       const buffer = Buffer.from(bytes);
       
-      const result = await new Promise((resolve, reject) => {
+      const result = await new Promise<CloudinaryUploadResult>((resolve, reject) => {
         cloudinary.uploader.upload_stream(
           {
             resource_type: 'auto',
@@ -75,16 +87,19 @@ export async function POST(request: NextRequest) {
           },
           (error, result) => {
             if (error) reject(error);
-            else resolve(result);
+            else resolve(result as CloudinaryUploadResult);
           }
         ).end(buffer);
       });
 
-      uploadedImages.push({
-        url: (result as CloudinaryUploadResult).secure_url,
-        public_id: (result as CloudinaryUploadResult).public_id
-      });
-    }
+      return {
+        url: result.secure_url,
+        public_id: result.public_id
+      };
+    });
+
+    // Wait for all uploads to complete in parallel
+    const uploadedImages = await Promise.all(uploadPromises);
 
     const project = new Project({
       title,

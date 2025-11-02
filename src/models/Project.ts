@@ -43,6 +43,10 @@ const projectSchema = new mongoose.Schema(
   }
 );
 
+// Add composite index for better query performance on status and createdAt
+// This optimizes the common query: find({ status: 'published' }).sort({ createdAt: -1 })
+projectSchema.index({ status: 1, createdAt: -1 });
+
 const Project = mongoose.models.Project || mongoose.model("Project", projectSchema);
 
 export default Project; 
