@@ -7,12 +7,29 @@ export async function POST(request: NextRequest) {
   try {
     await connectDB();
 
-    const { name, email, message } = await request.json();
+    const body = await request.json();
+    const { name, email, message, website } = body; // website is honeypot field
+
+    // Honeypot check - if this field is filled, it's a bot
+    if (website && website.trim() !== '') {
+      return NextResponse.json({
+        success: false,
+        message: 'Message sent successfully! I will get back to you soon.'
+      }, { status: 200 }); // Return success to confuse bots
+    }
 
     if (!name || !email || !message) {
       return NextResponse.json({
         success: false,
         message: 'Name, email, and message are required'
+      }, { status: 400 });
+    }
+
+    // Input length validation to prevent abuse
+    if (name.length > 100 || email.length > 255 || message.length > 5000) {
+      return NextResponse.json({
+        success: false,
+        message: 'Input fields are too long. Please keep them within limits.'
       }, { status: 400 });
     }
 

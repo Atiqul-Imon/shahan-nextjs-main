@@ -8,7 +8,8 @@ const ContactPage = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    message: ''
+    message: '',
+    website: '' // Honeypot field - hidden from users
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -30,7 +31,7 @@ const ContactPage = () => {
     try {
       const response = await apiClient.sendContact(formData) as { message: string };
       setMessage(response.message);
-      setFormData({ name: '', email: '', message: '' });
+      setFormData({ name: '', email: '', message: '', website: '' });
     } catch (err: unknown) {
       setError(true);
       setMessage(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
@@ -162,6 +163,7 @@ const ContactPage = () => {
                     required
                     className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:border-blue-500 transition-colors duration-200"
                     placeholder="Your name"
+                    maxLength={100}
                   />
                 </div>
 
@@ -177,6 +179,7 @@ const ContactPage = () => {
                     required
                     className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:border-blue-500 transition-colors duration-200"
                     placeholder="your.email@example.com"
+                    maxLength={255}
                   />
                 </div>
 
@@ -190,8 +193,26 @@ const ContactPage = () => {
                     onChange={handleChange}
                     required
                     rows={5}
+                    maxLength={5000}
                     className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:border-blue-500 transition-colors duration-200 resize-none"
                     placeholder="Your message..."
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    {formData.message.length}/5000 characters
+                  </p>
+                </div>
+
+                {/* Honeypot field - hidden from users but visible to bots */}
+                <div className="hidden" aria-hidden="true">
+                  <label htmlFor="website">Website (leave blank)</label>
+                  <input
+                    type="text"
+                    id="website"
+                    name="website"
+                    value={formData.website}
+                    onChange={handleChange}
+                    tabIndex={-1}
+                    autoComplete="off"
                   />
                 </div>
 
