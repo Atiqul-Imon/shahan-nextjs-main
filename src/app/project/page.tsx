@@ -17,21 +17,20 @@ interface Project {
   createdAt: string;
 }
 
+const ML_DASHBOARD_PROJECT: Project = {
+  _id: 'ml-dashboard',
+  title: 'ML Model Comparison Dashboard',
+  description: 'Interactive analytics dashboard for comparing OCR text classification models. Features comprehensive performance analysis, real-time visualizations, and AI-powered recommendations for DistilBERT vs Longformer-DeBERTa models across multiple datasets.',
+  technologies: ['React', 'TypeScript', 'Recharts', 'Tailwind CSS', 'Next.js', 'Machine Learning', 'Data Visualization', 'OCR', 'NLP'],
+  images: [],
+  liveUrl: '/project/ml-dashboard',
+  sourceUrl: 'https://github.com/shahan24h/ml-dashboard',
+  createdAt: new Date().toISOString(),
+};
+
 const ProjectPage = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // Hardcoded ML Dashboard project
-  const mlDashboardProject: Project = {
-    _id: 'ml-dashboard',
-    title: 'ML Model Comparison Dashboard',
-    description: 'Interactive analytics dashboard for comparing OCR text classification models. Features comprehensive performance analysis, real-time visualizations, and AI-powered recommendations for DistilBERT vs Longformer-DeBERTa models across multiple datasets.',
-    technologies: ['React', 'TypeScript', 'Recharts', 'Tailwind CSS', 'Next.js', 'Machine Learning', 'Data Visualization', 'OCR', 'NLP'],
-    images: [],
-    liveUrl: '/project/ml-dashboard',
-    sourceUrl: 'https://github.com/shahan24h/ml-dashboard',
-    createdAt: new Date().toISOString(),
-  };
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -40,19 +39,19 @@ const ProjectPage = () => {
         const dbProjects = response.data || [];
         
         // Combine hardcoded ML Dashboard with database projects
-        const allProjects = [mlDashboardProject, ...dbProjects];
+        const allProjects = [ML_DASHBOARD_PROJECT, ...dbProjects];
         setProjects(allProjects);
       } catch (error) {
         console.error('Error fetching projects:', error);
         // If API fails, show at least the ML Dashboard
-        setProjects([mlDashboardProject]);
+        setProjects([ML_DASHBOARD_PROJECT]);
       } finally {
         setLoading(false);
       }
     };
 
     fetchProjects();
-  }, [mlDashboardProject]);
+  }, []);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
