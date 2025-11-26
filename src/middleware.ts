@@ -3,11 +3,13 @@ import type { NextRequest } from 'next/server';
 import { verifyAccessToken } from './lib/auth';
 import { getRateLimitKey, checkRateLimit, RATE_LIMITS } from './lib/rateLimit';
 
+const isDev = process.env.NODE_ENV !== 'production';
+
 export function middleware(request: NextRequest) {
   let response: NextResponse | null = null;
 
   // Rate limiting for API routes
-  if (request.nextUrl.pathname.startsWith('/api/')) {
+  if (!isDev && request.nextUrl.pathname.startsWith('/api/')) {
     const path = request.nextUrl.pathname;
     const method = request.method;
     

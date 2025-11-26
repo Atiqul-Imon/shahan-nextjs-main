@@ -28,6 +28,17 @@ const ML_DASHBOARD_PROJECT: Project = {
   createdAt: new Date().toISOString(),
 };
 
+const QSR_ANALYSIS_PROJECT: Project = {
+  _id: 'qsr-analysis',
+  title: 'QSR POS Sales Analysis Dashboard',
+  description: 'Comprehensive data science project analyzing 1,743 POS transactions across 10 restaurant locations. Features interactive dashboard, machine learning models (100% accuracy), revenue opportunity analysis ($4-5K monthly potential), and complete process flowchart.',
+  technologies: ['React', 'TypeScript', 'Recharts', 'Python', 'Machine Learning', 'Data Science', 'Random Forest', 'Data Visualization'],
+  images: [],
+  liveUrl: '/project/qsr-analysis',
+  sourceUrl: '#',
+  createdAt: new Date().toISOString(),
+};
+
 const ProjectPage = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,13 +49,13 @@ const ProjectPage = () => {
         const response = await apiClient.getProjects() as { data?: Project[] };
         const dbProjects = response.data || [];
         
-        // Combine hardcoded ML Dashboard with database projects
-        const allProjects = [ML_DASHBOARD_PROJECT, ...dbProjects];
+        // Combine hardcoded projects with database projects
+        const allProjects = [QSR_ANALYSIS_PROJECT, ML_DASHBOARD_PROJECT, ...dbProjects];
         setProjects(allProjects);
       } catch (error) {
         console.error('Error fetching projects:', error);
-        // If API fails, show at least the ML Dashboard
-        setProjects([ML_DASHBOARD_PROJECT]);
+        // If API fails, show at least the hardcoded projects
+        setProjects([QSR_ANALYSIS_PROJECT, ML_DASHBOARD_PROJECT]);
       } finally {
         setLoading(false);
       }
@@ -59,6 +70,12 @@ const ProjectPage = () => {
       month: "short",
       day: "numeric",
     });
+  };
+
+  const getProjectUrl = (projectId: string) => {
+    if (projectId === 'ml-dashboard') return '/project/ml-dashboard';
+    if (projectId === 'qsr-analysis') return '/project/qsr-analysis';
+    return `/project/${projectId}`;
   };
 
   const getRandomGradient = () => {
@@ -109,7 +126,7 @@ const ProjectPage = () => {
               >
                 {/* Clickable Image */}
                 <Link 
-                  href={project._id === 'ml-dashboard' ? '/project/ml-dashboard' : `/project/${project._id}`}
+                  href={getProjectUrl(project._id)}
                   className="block relative overflow-hidden"
                 >
                   {project.images && project.images.length > 0 ? (
@@ -148,7 +165,7 @@ const ProjectPage = () => {
                 <div className="p-6">
                   {/* Clickable Title */}
                   <Link 
-                    href={project._id === 'ml-dashboard' ? '/project/ml-dashboard' : `/project/${project._id}`}
+                    href={getProjectUrl(project._id)}
                     className="block group/title"
                   >
                     <h3 className="text-xl font-bold text-gray-100 mb-3 group-hover/title:text-blue-400 transition-colors duration-200 line-clamp-2 leading-tight">
@@ -188,7 +205,7 @@ const ProjectPage = () => {
 
                   {/* Action Button */}
                   <Link
-                    href={project._id === 'ml-dashboard' ? '/project/ml-dashboard' : `/project/${project._id}`}
+                    href={getProjectUrl(project._id)}
                     className="w-full group/btn inline-flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium text-sm rounded-lg transition-all duration-200 transform hover:scale-[1.02] hover:shadow-lg"
                   >
                     <ExternalLink size={16} className="mr-2 group-hover/btn:rotate-12 transition-transform duration-200" />

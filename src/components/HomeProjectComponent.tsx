@@ -28,6 +28,17 @@ const ML_DASHBOARD_PROJECT: Project = {
   createdAt: new Date().toISOString(),
 };
 
+const QSR_ANALYSIS_PROJECT: Project = {
+  _id: 'qsr-analysis',
+  title: 'QSR POS Sales Analysis Dashboard',
+  description: 'Comprehensive data science project analyzing 1,743 POS transactions across 10 restaurant locations. Features interactive dashboard, machine learning models (100% accuracy), revenue opportunity analysis ($4-5K monthly potential), and complete process flowchart.',
+  technologies: ['React', 'TypeScript', 'Recharts', 'Python', 'Machine Learning', 'Data Science', 'Random Forest', 'Data Visualization'],
+  images: [],
+  liveUrl: '/project/qsr-analysis',
+  sourceUrl: '#',
+  createdAt: new Date().toISOString(),
+};
+
 const HomeProjectComponent = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,8 +49,8 @@ const HomeProjectComponent = () => {
         const response = await apiClient.getProjects() as { data?: Project[] };
         const dbProjects = response.data || [];
         
-        // Combine hardcoded ML Dashboard with database projects
-        const allProjects = [ML_DASHBOARD_PROJECT, ...dbProjects];
+        // Combine hardcoded projects with database projects
+        const allProjects = [QSR_ANALYSIS_PROJECT, ML_DASHBOARD_PROJECT, ...dbProjects];
         setProjects(allProjects.slice(0, 3)); // Show only first 3 projects
       } catch (error) {
         console.error('Error fetching projects:', error);
@@ -59,6 +70,12 @@ const HomeProjectComponent = () => {
       month: "short",
       day: "numeric",
     });
+  };
+
+  const getProjectUrl = (projectId: string) => {
+    if (projectId === 'ml-dashboard') return '/project/ml-dashboard';
+    if (projectId === 'qsr-analysis') return '/project/qsr-analysis';
+    return `/project/${projectId}`;
   };
 
   if (loading) {
@@ -99,7 +116,7 @@ const HomeProjectComponent = () => {
               >
                 {/* Clickable Image */}
                 <Link 
-                  href={project._id === 'ml-dashboard' ? '/project/ml-dashboard' : `/project/${project._id}`}
+                  href={getProjectUrl(project._id)}
                   className="block relative"
                 >
                   {project.images && project.images.length > 0 ? (
@@ -125,7 +142,7 @@ const HomeProjectComponent = () => {
                 <div className="p-6">
                   {/* Clickable Title */}
                   <Link 
-                    href={project._id === 'ml-dashboard' ? '/project/ml-dashboard' : `/project/${project._id}`}
+                    href={getProjectUrl(project._id)}
                     className="block"
                   >
                     <h3 className="text-xl font-bold text-gray-100 mb-3 line-clamp-2">
@@ -163,7 +180,7 @@ const HomeProjectComponent = () => {
 
                   {/* Action Button */}
                   <Link
-                    href={project._id === 'ml-dashboard' ? '/project/ml-dashboard' : `/project/${project._id}`}
+                    href={getProjectUrl(project._id)}
                     className="inline-flex items-center justify-center w-full px-4 py-2.5 bg-blue-600 text-white font-medium text-sm rounded-lg"
                   >
                     <span>View Project</span>
