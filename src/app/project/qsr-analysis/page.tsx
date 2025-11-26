@@ -7,7 +7,7 @@ import {
 } from 'recharts';
 import { 
   TrendingUp, DollarSign, ShoppingCart, Target, 
-  Award, Clock, Store, Zap, Brain, ChevronRight,
+  Award, Store, Zap, Brain,
   Database, Filter, BarChart3, CheckCircle, ArrowRight, Download
 } from 'lucide-react';
 
@@ -307,7 +307,7 @@ const QSRAnalysisProject = () => {
           ].map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => setActiveTab(tab.id as 'overview' | 'analysis' | 'models' | 'flowchart')}
               className={`flex-1 min-w-[120px] px-4 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
                 activeTab === tab.id
                   ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md'
@@ -405,7 +405,7 @@ const QSRAnalysisProject = () => {
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                    label={({ name, percent }: { name: string; percent?: number }) => `${name}: ${((percent || 0) * 100).toFixed(0)}%`}
                     outerRadius={150}
                     fill="#8884d8"
                     dataKey="value"
