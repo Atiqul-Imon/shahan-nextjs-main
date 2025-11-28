@@ -39,6 +39,17 @@ const QSR_ANALYSIS_PROJECT: Project = {
   createdAt: new Date().toISOString(),
 };
 
+const MUNICIPAL_COURT_ANALYSIS_PROJECT: Project = {
+  _id: 'municipal-court-case-analysis-austin',
+  title: 'Municipal Court Case Analysis – Austin, TX',
+  description: 'Data-backed municipal court assessment covering 19,906 October 2025 cases in Austin. Delivers operational triage, equity monitoring, fiscal impact sizing ($263K savings), and prioritized policy interventions with full supporting materials.',
+  technologies: ['Python', 'Pandas', 'Seaborn', 'Statistical Modeling', 'Policy Analysis', 'Next.js', 'Tailwind CSS'],
+  images: [],
+  liveUrl: '/project/municipal-court-case-analysis-austin',
+  sourceUrl: undefined,
+  createdAt: new Date('2025-10-31').toISOString(),
+};
+
 const HomeProjectComponent = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,12 +61,17 @@ const HomeProjectComponent = () => {
         const dbProjects = response.data || [];
         
         // Combine hardcoded projects with database projects
-        const allProjects = [QSR_ANALYSIS_PROJECT, ML_DASHBOARD_PROJECT, ...dbProjects];
+        const allProjects = [
+          MUNICIPAL_COURT_ANALYSIS_PROJECT,
+          QSR_ANALYSIS_PROJECT,
+          ML_DASHBOARD_PROJECT,
+          ...dbProjects,
+        ];
         setProjects(allProjects.slice(0, 3)); // Show only first 3 projects
       } catch (error) {
         console.error('Error fetching projects:', error);
         // If API fails, show at least the ML Dashboard
-        setProjects([ML_DASHBOARD_PROJECT]);
+        setProjects([MUNICIPAL_COURT_ANALYSIS_PROJECT, ML_DASHBOARD_PROJECT]);
       } finally {
         setLoading(false);
       }
@@ -75,6 +91,7 @@ const HomeProjectComponent = () => {
   const getProjectUrl = (projectId: string) => {
     if (projectId === 'ml-dashboard') return '/project/ml-dashboard';
     if (projectId === 'qsr-analysis') return '/project/qsr-analysis';
+    if (projectId === 'municipal-court-case-analysis-austin') return '/project/municipal-court-case-analysis-austin';
     return `/project/${projectId}`;
   };
 
