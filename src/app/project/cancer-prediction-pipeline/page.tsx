@@ -47,7 +47,7 @@ const CancerPredictionProject = () => {
           {/* CTA Buttons */}
           <div className="flex flex-wrap gap-4">
             <a 
-              href="https://github.com/yourusername/cancer-prediction-pipeline" 
+              href="https://github.com/shahan24h/oncology-treatment-analysis/tree/main" 
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-6 py-3 bg-white text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-colors"

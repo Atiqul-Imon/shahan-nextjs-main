@@ -1,6 +1,7 @@
 'use client';
 
 import React from "react";
+import { Github } from "lucide-react";
 
 type Metric = {
   label: string;
@@ -77,10 +78,22 @@ const BECAdversarialDashboard: React.FC = () => {
   return (
     <section className="w-full max-w-6xl mx-auto px-4 py-10 md:py-14 bg-gray-50">
       {/* Header */}
-      <header className="mb-8 md:mb-10">
-        <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-1.5 text-xs font-semibold text-white shadow-md">
-          <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
-          Research Project · Security · NLP · Adversarial ML
+      <header className="mb-8 md:mb-10 relative">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+          <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-1.5 text-xs font-semibold text-white shadow-md">
+            <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
+            Research Project · Security · NLP · Adversarial ML
+          </div>
+          
+          <a 
+            href="https://github.com/shahan24h/Social-Engineering-Adversarial-Obfuscation-in-BEC-Emails.git" 
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[#24292e] text-white rounded-lg font-medium hover:bg-[#2d3339] transition-colors shadow-sm border border-[#30363d]"
+          >
+            <Github className="w-4 h-4" />
+            <span className="text-sm">View on GitHub</span>
+          </a>
         </div>
 
         <h1 className="mt-4 text-2.5xl md:text-4xl font-bold tracking-tight text-slate-900">
