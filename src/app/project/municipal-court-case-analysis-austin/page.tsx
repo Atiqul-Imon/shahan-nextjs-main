@@ -14,8 +14,7 @@ import {
   ChevronUp,
   ExternalLink,
   Github,
-  FileText,
-  Download
+  FileText
 } from 'lucide-react';
 
 interface ProjectMetric {
@@ -179,18 +178,13 @@ const MunicipalCourtAnalysis: React.FC = () => {
                 View Analysis
               </a>
               <a 
-                href="#" 
+                href="https://github.com/shahan24h/Municipal_Court_Case_Analysis_Austin" 
+                target="_blank"
+                rel="noopener noreferrer"
                 className="bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-800 transition flex items-center gap-2"
               >
                 <Github size={20} />
                 GitHub Repository
-              </a>
-              <a 
-                href="#" 
-                className="bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-800 transition flex items-center gap-2"
-              >
-                <Download size={20} />
-                Download Report
               </a>
             </div>
           </div>
@@ -716,18 +710,13 @@ const MunicipalCourtAnalysis: React.FC = () => {
           </p>
           <div className="flex justify-center gap-4">
             <a 
-              href="https://linkedin.com/in/yourprofile" 
+              href="https://www.linkedin.com/in/shahan24h/" 
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition flex items-center gap-2"
             >
               <ExternalLink size={20} />
               LinkedIn Profile
-            </a>
-            <a 
-              href="https://github.com/yourprofile" 
-              className="bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-800 transition flex items-center gap-2"
-            >
-              <Github size={20} />
-              View More Projects
             </a>
           </div>
         </div>
