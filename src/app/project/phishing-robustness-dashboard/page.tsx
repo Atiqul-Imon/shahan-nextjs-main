@@ -71,23 +71,23 @@ const techStack = [
 
 const PhishingRobustnessDashboard: React.FC = () => {
   return (
-    <section className="w-full max-w-6xl mx-auto px-4 py-10 md:py-14">
+    <section className="w-full max-w-6xl mx-auto px-4 py-10 md:py-14 bg-gradient-to-br from-indigo-50/30 via-white to-purple-50/20">
       {/* Header */}
       <header className="mb-8 md:mb-10">
-        <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700 border border-indigo-100">
-          <span className="h-2 w-2 rounded-full bg-indigo-500" />
+        <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 px-4 py-1.5 text-xs font-semibold text-white shadow-md">
+          <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
           Research Project · Phishing Detection · Robustness
         </div>
 
-        <h1 className="mt-4 text-2.5xl md:text-4xl font-semibold tracking-tight text-slate-900">
+        <h1 className="mt-4 text-2.5xl md:text-4xl font-bold tracking-tight text-slate-900">
           Robustness of Phishing Detection
           <br className="hidden md:block" />
-          <span className="text-slate-500 text-[0.9em]">
+          <span className="text-indigo-700 text-[0.9em]">
             Under Adversarial Unicode Obfuscation
           </span>
         </h1>
 
-        <p className="mt-3 max-w-2xl text-sm md:text-base text-slate-600">
+        <p className="mt-3 max-w-2xl text-sm md:text-base text-slate-700 font-medium">
           I evaluated how a modern ML-based phishing vs benign classifier behaves when phishing emails
           are adversarially obfuscated using Unicode homoglyphs and zero-width characters, and
           compared its robustness with brittle keyword-based methods from Project 1.
@@ -103,27 +103,35 @@ const PhishingRobustnessDashboard: React.FC = () => {
 
       {/* Metrics */}
       <section className="grid gap-4 md:gap-5 md:grid-cols-2 xl:grid-cols-4 mb-8 md:mb-10">
-        {metrics.map((m) => (
-          <div
-            key={m.label}
-            className="rounded-2xl border border-slate-100 bg-white/70 backdrop-blur-sm px-4 py-4 shadow-sm hover:shadow-md transition-shadow"
-          >
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">
-              {m.label}
-            </p>
-            <p className="mt-2 text-2xl font-semibold text-slate-900">{m.value}</p>
-            {m.sublabel && (
-              <p className="mt-1 text-xs text-slate-500 leading-snug">{m.sublabel}</p>
-            )}
-          </div>
-        ))}
+        {metrics.map((m, idx) => {
+          const colors = [
+            'from-indigo-500 to-indigo-600',
+            'from-purple-500 to-purple-600',
+            'from-blue-500 to-blue-600',
+            'from-emerald-500 to-emerald-600'
+          ];
+          return (
+            <div
+              key={m.label}
+              className={`rounded-2xl border-2 border-transparent bg-gradient-to-br ${colors[idx]} px-5 py-5 shadow-lg hover:shadow-xl transition-all transform hover:scale-105`}
+            >
+              <p className="text-xs font-semibold text-white/90 uppercase tracking-wide">
+                {m.label}
+              </p>
+              <p className="mt-2 text-3xl font-bold text-white">{m.value}</p>
+              {m.sublabel && (
+                <p className="mt-2 text-xs text-white/80 leading-snug font-medium">{m.sublabel}</p>
+              )}
+            </div>
+          );
+        })}
       </section>
 
       <div className="grid gap-6 lg:grid-cols-3 mb-8 md:mb-10">
         {/* Pipeline */}
-        <section className="lg:col-span-2 rounded-2xl border border-slate-100 bg-white/70 px-4 py-4 md:px-6 md:py-5 shadow-sm">
-          <h2 className="text-sm font-semibold text-slate-900">Experiment Pipeline</h2>
-          <p className="mt-1 text-xs text-slate-500">
+        <section className="lg:col-span-2 rounded-2xl border-2 border-indigo-200 bg-white px-4 py-4 md:px-6 md:py-5 shadow-lg">
+          <h2 className="text-base font-bold text-indigo-900">Experiment Pipeline</h2>
+          <p className="mt-1 text-xs text-slate-700 font-medium">
             How I constructed the phishing vs benign dataset and tested robustness to Unicode
             obfuscation.
           </p>
@@ -158,14 +166,14 @@ const PhishingRobustnessDashboard: React.FC = () => {
         </section>
 
         {/* Clean vs poisoned performance summary */}
-        <section className="rounded-2xl border border-slate-100 bg-slate-900 px-4 py-4 md:px-5 md:py-5 text-slate-50 shadow-sm">
-          <h2 className="text-sm font-semibold flex items-center gap-2">
+        <section className="rounded-2xl border-2 border-indigo-600 bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-900 px-4 py-4 md:px-5 md:py-5 text-white shadow-xl">
+          <h2 className="text-base font-bold flex items-center gap-2">
             Clean vs Poisoned Performance
-            <span className="inline-flex items-center rounded-full bg-indigo-500/15 px-2 py-0.5 text-[0.65rem] font-medium text-indigo-200 border border-indigo-500/40">
+            <span className="inline-flex items-center rounded-full bg-emerald-500 px-2.5 py-1 text-[0.7rem] font-bold text-white shadow-md">
               Robustness Check
             </span>
           </h2>
-          <p className="mt-1 text-xs text-slate-300">
+          <p className="mt-1 text-xs text-indigo-100 font-medium">
             Clean-trained model evaluated on clean vs Unicode-obfuscated phishing emails.
           </p>
 
@@ -187,7 +195,7 @@ const PhishingRobustnessDashboard: React.FC = () => {
             />
           </div>
 
-          <p className="mt-4 text-xs text-slate-300">
+          <p className="mt-4 text-xs text-indigo-100 font-medium">
             In this configuration, the ML classifier remains robust to Unicode obfuscation, even
             though keyword-based detectors from Project 1 suffered heavy degradation.
           </p>
@@ -195,16 +203,16 @@ const PhishingRobustnessDashboard: React.FC = () => {
       </div>
 
       {/* Model comparison */}
-      <section className="rounded-2xl border border-slate-100 bg-white/70 px-4 py-4 md:px-6 md:py-5 shadow-sm mb-8 md:mb-10">
+      <section className="rounded-2xl border-2 border-purple-200 bg-white px-4 py-4 md:px-6 md:py-5 shadow-lg mb-8 md:mb-10">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <h2 className="text-sm font-semibold text-slate-900">Robustness Summary</h2>
-            <p className="mt-1 text-xs text-slate-500">
+            <h2 className="text-base font-bold text-purple-900">Robustness Summary</h2>
+            <p className="mt-1 text-xs text-slate-700 font-medium">
               Same model, same train split — evaluated under clean vs adversarially obfuscated
               phishing emails to measure robustness.
             </p>
           </div>
-          <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[0.65rem] font-medium text-slate-600">
+          <span className="inline-flex items-center rounded-full border-2 border-purple-500 bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-3 py-1.5 text-[0.7rem] font-bold shadow-md">
             TF-IDF (word-level) · Logistic Regression
           </span>
         </div>
@@ -212,22 +220,22 @@ const PhishingRobustnessDashboard: React.FC = () => {
         <div className="mt-4 overflow-x-auto">
           <table className="min-w-full text-xs md:text-sm border-collapse">
             <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/70">
-                <Th>Scenario</Th>
-                <Th>Phishing recall</Th>
-                <Th>Benign recall</Th>
-                <Th>Accuracy</Th>
-                <Th>Notes</Th>
+              <tr className="border-b-2 border-indigo-300 bg-gradient-to-r from-indigo-600 to-purple-600">
+                <Th className="text-white">Scenario</Th>
+                <Th className="text-white">Phishing recall</Th>
+                <Th className="text-white">Benign recall</Th>
+                <Th className="text-white">Accuracy</Th>
+                <Th className="text-white">Notes</Th>
               </tr>
             </thead>
             <tbody>
               {modelRows.map((row, idx) => (
-                <tr key={row.scenario} className={idx % 2 === 0 ? "bg-white" : "bg-slate-50/40"}>
-                  <Td className="font-medium text-slate-900">{row.scenario}</Td>
-                  <Td>{row.phishingRecall}</Td>
-                  <Td>{row.benignRecall}</Td>
-                  <Td className="font-semibold text-slate-900">{row.accuracy}</Td>
-                  <Td className="text-slate-500">{row.notes}</Td>
+                <tr key={row.scenario} className={idx % 2 === 0 ? "bg-white hover:bg-indigo-50" : "bg-indigo-50/50 hover:bg-indigo-100"}>
+                  <Td className="font-bold text-slate-900">{row.scenario}</Td>
+                  <Td className="font-semibold text-emerald-700">{row.phishingRecall}</Td>
+                  <Td className="font-semibold text-blue-700">{row.benignRecall}</Td>
+                  <Td className="font-bold text-indigo-700 text-base">{row.accuracy}</Td>
+                  <Td className="text-slate-700 font-medium">{row.notes}</Td>
                 </tr>
               ))}
             </tbody>
@@ -237,9 +245,9 @@ const PhishingRobustnessDashboard: React.FC = () => {
 
       {/* Insights + Tech stack */}
       <section className="grid gap-6 md:grid-cols-3">
-        <div className="md:col-span-2 rounded-2xl border border-slate-100 bg-white/70 px-4 py-4 md:px-6 md:py-5 shadow-sm">
-          <h2 className="text-sm font-semibold text-slate-900">Key Insights</h2>
-          <ul className="mt-3 space-y-2 text-sm text-slate-700">
+        <div className="md:col-span-2 rounded-2xl border-2 border-emerald-200 bg-white px-4 py-4 md:px-6 md:py-5 shadow-lg">
+          <h2 className="text-base font-bold text-emerald-900">Key Insights</h2>
+          <ul className="mt-3 space-y-2 text-sm text-slate-800 font-medium">
             <li className="flex gap-2">
               <Bullet />
               <span>
@@ -278,16 +286,16 @@ const PhishingRobustnessDashboard: React.FC = () => {
           </ul>
         </div>
 
-        <div className="rounded-2xl border border-slate-100 bg-white/70 px-4 py-4 md:px-5 md:py-5 shadow-sm">
-          <h2 className="text-sm font-semibold text-slate-900">Tech Stack</h2>
-          <p className="mt-1 text-xs text-slate-500">
+        <div className="rounded-2xl border-2 border-blue-200 bg-white px-4 py-4 md:px-5 md:py-5 shadow-lg">
+          <h2 className="text-base font-bold text-blue-900">Tech Stack</h2>
+          <p className="mt-1 text-xs text-slate-700 font-medium">
             Tools and concepts used to evaluate robustness of phishing detection under Unicode attacks.
           </p>
           <div className="mt-3 flex flex-wrap gap-1.5">
             {techStack.map((t) => (
               <span
                 key={t}
-                className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[0.7rem] font-medium text-slate-700"
+                className="inline-flex items-center rounded-full border-2 border-blue-400 bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-3 py-1.5 text-[0.7rem] font-bold shadow-md"
               >
                 {t}
               </span>
@@ -300,7 +308,7 @@ const PhishingRobustnessDashboard: React.FC = () => {
 };
 
 const Tag: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[0.7rem] font-medium text-slate-700">
+  <span className="inline-flex items-center rounded-full border-2 border-indigo-400 bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-3 py-1.5 text-[0.75rem] font-bold shadow-md">
     {children}
   </span>
 );
@@ -311,12 +319,12 @@ const PipelineStep: React.FC<{ step: string; title: string; body: string }> = ({
   body,
 }) => (
   <li className="flex gap-3">
-    <div className="mt-0.5 flex h-7 w-7 items-center justify-center rounded-full bg-slate-900 text-[0.7rem] font-semibold text-slate-50">
+    <div className="mt-0.5 flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-indigo-600 to-purple-600 text-[0.7rem] font-bold text-white shadow-md">
       {step}
     </div>
     <div>
-      <p className="text-xs font-semibold text-slate-900">{title}</p>
-      <p className="mt-1 text-xs text-slate-600">{body}</p>
+      <p className="text-xs font-bold text-indigo-900">{title}</p>
+      <p className="mt-1 text-xs text-slate-700 font-medium">{body}</p>
     </div>
   </li>
 );
@@ -328,7 +336,7 @@ const Th: React.FC<React.HTMLAttributes<HTMLTableCellElement>> = ({
 }) => (
   <th
     className={
-      "px-3 py-2 text-left text-[0.7rem] font-semibold uppercase tracking-wide text-slate-500 " +
+      "px-3 py-2 text-left text-[0.7rem] font-bold uppercase tracking-wide " +
       (className ?? "")
     }
     {...rest}
@@ -342,13 +350,13 @@ const Td: React.FC<React.HTMLAttributes<HTMLTableCellElement>> = ({
   className,
   ...rest
 }) => (
-  <td className={"px-3 py-2 align-top text-xs text-slate-700 " + (className ?? "")} {...rest}>
+  <td className={"px-3 py-2 align-top text-xs " + (className ?? "")} {...rest}>
     {children}
   </td>
 );
 
 const Bullet: React.FC = () => (
-  <span className="mt-1 inline-block h-1.5 w-1.5 rounded-full bg-slate-400 flex-shrink-0" />
+  <span className="mt-1 inline-block h-2 w-2 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 flex-shrink-0 shadow-sm" />
 );
 
 const PerfRow: React.FC<{ label: string; clean: string; poisoned: string }> = ({
@@ -358,14 +366,14 @@ const PerfRow: React.FC<{ label: string; clean: string; poisoned: string }> = ({
 }) => (
   <div>
     <div className="flex justify-between gap-2">
-      <span className="text-slate-200">{label}</span>
-      <span className="text-[0.7rem] text-slate-300">
-        clean: <span className="font-semibold text-indigo-200">{clean}</span> · poisoned:{" "}
-        <span className="font-semibold text-emerald-200">{poisoned}</span>
+      <span className="text-white font-bold">{label}</span>
+      <span className="text-[0.7rem] text-indigo-100 font-semibold">
+        clean: <span className="font-bold text-indigo-300 bg-indigo-800/50 px-1.5 py-0.5 rounded">{clean}</span> · poisoned:{" "}
+        <span className="font-bold text-emerald-300 bg-emerald-800/50 px-1.5 py-0.5 rounded">{poisoned}</span>
       </span>
     </div>
-    <div className="mt-1 h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
-      <div className="h-full w-full rounded-full bg-gradient-to-r from-indigo-400/80 to-emerald-400/80" />
+    <div className="mt-2 h-2 w-full rounded-full bg-indigo-950 overflow-hidden shadow-inner">
+      <div className="h-full w-full rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-500 shadow-lg" />
     </div>
   </div>
 );

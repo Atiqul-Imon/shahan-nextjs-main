@@ -75,22 +75,22 @@ const techStack = [
 
 const BECAdversarialDashboard: React.FC = () => {
   return (
-    <section className="w-full max-w-6xl mx-auto px-4 py-10 md:py-14">
+    <section className="w-full max-w-6xl mx-auto px-4 py-10 md:py-14 bg-gradient-to-br from-emerald-50/30 via-white to-teal-50/20">
       {/* Header */}
       <header className="mb-8 md:mb-10">
-        <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 border border-emerald-100">
-          <span className="h-2 w-2 rounded-full bg-emerald-500" />
+        <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-1.5 text-xs font-semibold text-white shadow-md">
+          <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
           Research Project · Security · NLP · Adversarial ML
         </div>
 
-        <h1 className="mt-4 text-2.5xl md:text-4xl font-semibold tracking-tight text-slate-900">
+        <h1 className="mt-4 text-2.5xl md:text-4xl font-bold tracking-tight text-slate-900">
           Social Engineering & Adversarial Obfuscation <br className="hidden md:block" />
-          <span className="text-slate-500 text-[0.9em]">
+          <span className="text-amber-800 font-bold text-[0.9em]">
             in Business Email Compromise (BEC) Attacks
           </span>
         </h1>
 
-        <p className="mt-3 max-w-2xl text-sm md:text-base text-slate-600">
+        <p className="mt-3 max-w-2xl text-sm md:text-base text-slate-700 font-medium">
           I analyzed how Unicode-based adversarial techniques (homoglyphs and zero-width characters)
           break keyword-based phishing detection, and built a character-level model that reliably
           detects these obfuscation patterns in BEC phishing emails.
@@ -106,27 +106,35 @@ const BECAdversarialDashboard: React.FC = () => {
 
       {/* Metrics */}
       <section className="grid gap-4 md:gap-5 md:grid-cols-2 xl:grid-cols-4 mb-8 md:mb-10">
-        {metrics.map((m) => (
-          <div
-            key={m.label}
-            className="rounded-2xl border border-slate-100 bg-white/70 backdrop-blur-sm px-4 py-4 shadow-sm hover:shadow-md transition-shadow"
-          >
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">
-              {m.label}
-            </p>
-            <p className="mt-2 text-2xl font-semibold text-slate-900">{m.value}</p>
-            {m.sublabel && (
-              <p className="mt-1 text-xs text-slate-500 leading-snug">{m.sublabel}</p>
-            )}
-          </div>
-        ))}
+        {metrics.map((m, idx) => {
+          const colors = [
+            'from-emerald-500 to-emerald-600',
+            'from-teal-500 to-teal-600',
+            'from-orange-500 to-orange-600',
+            'from-green-500 to-green-600'
+          ];
+          return (
+            <div
+              key={m.label}
+              className={`rounded-2xl border-2 border-transparent bg-gradient-to-br ${colors[idx]} px-5 py-5 shadow-lg hover:shadow-xl transition-all transform hover:scale-105`}
+            >
+              <p className="text-xs font-semibold text-white/90 uppercase tracking-wide">
+                {m.label}
+              </p>
+              <p className="mt-2 text-3xl font-bold text-white">{m.value}</p>
+              {m.sublabel && (
+                <p className="mt-2 text-xs text-white/80 leading-snug font-medium">{m.sublabel}</p>
+              )}
+            </div>
+          );
+        })}
       </section>
 
       <div className="grid gap-6 lg:grid-cols-3 mb-8 md:mb-10">
         {/* Left column – pipeline */}
-        <section className="lg:col-span-2 rounded-2xl border border-slate-100 bg-white/70 px-4 py-4 md:px-6 md:py-5 shadow-sm">
-          <h2 className="text-sm font-semibold text-slate-900">Project Pipeline</h2>
-          <p className="mt-1 text-xs text-slate-500">
+        <section className="lg:col-span-2 rounded-2xl border-2 border-emerald-200 bg-white px-4 py-4 md:px-6 md:py-5 shadow-lg">
+          <h2 className="text-base font-bold text-emerald-900">Project Pipeline</h2>
+          <p className="mt-1 text-xs text-slate-700 font-medium">
             End-to-end workflow from data generation to adversarial detection and explanation.
           </p>
 
@@ -160,14 +168,14 @@ const BECAdversarialDashboard: React.FC = () => {
         </section>
 
         {/* Right column – keyword impact */}
-        <section className="rounded-2xl border border-slate-100 bg-slate-900 px-4 py-4 md:px-5 md:py-5 text-slate-50 shadow-sm">
-          <h2 className="text-sm font-semibold flex items-center gap-2">
+        <section className="rounded-2xl border-2 border-emerald-600 bg-gradient-to-br from-emerald-900 via-teal-900 to-emerald-900 px-4 py-4 md:px-5 md:py-5 text-white shadow-xl">
+          <h2 className="text-base font-bold flex items-center gap-2">
             Keyword Signal Loss
-            <span className="inline-flex items-center rounded-full bg-emerald-500/15 px-2 py-0.5 text-[0.65rem] font-medium text-emerald-300 border border-emerald-500/40">
+            <span className="inline-flex items-center rounded-full bg-orange-500 px-2.5 py-1 text-[0.7rem] font-bold text-white shadow-md">
               Adversarial Impact
             </span>
           </h2>
-          <p className="mt-1 text-xs text-slate-300">
+          <p className="mt-1 text-xs text-emerald-100 font-medium">
             How much keyword-based detection breaks under Unicode obfuscation (modified emails only).
           </p>
 
@@ -175,36 +183,36 @@ const BECAdversarialDashboard: React.FC = () => {
             {keywordStats.map((k) => (
               <div key={k.keyword}>
                 <div className="flex justify-between text-xs">
-                  <span className="font-medium text-slate-100">{k.keyword}</span>
-                  <span className="text-emerald-300">{k.drop} drop</span>
+                  <span className="font-bold text-white">{k.keyword}</span>
+                  <span className="text-orange-300 font-bold bg-orange-900/50 px-2 py-0.5 rounded">{k.drop} drop</span>
                 </div>
-                <div className="mt-1 h-1.5 w-full rounded-full bg-slate-700 overflow-hidden">
-                  <div className="h-full w-4/5 rounded-full bg-emerald-400/90" />
+                <div className="mt-2 h-2 w-full rounded-full bg-emerald-950 overflow-hidden shadow-inner">
+                  <div className="h-full w-4/5 rounded-full bg-gradient-to-r from-orange-500 via-red-500 to-orange-400 shadow-lg" />
                 </div>
               </div>
             ))}
           </div>
 
-          <p className="mt-4 text-xs text-slate-300">
+          <p className="mt-4 text-xs text-emerald-100 font-medium">
             In the worst cases, surface-level keyword matches for critical financial terms like{" "}
-            <span className="font-semibold text-emerald-200">&quot;invoice&quot;</span> and{" "}
-            <span className="font-semibold text-emerald-200">&quot;immediately&quot;</span> drop by more than{" "}
-            <span className="font-semibold text-emerald-200">90%</span>.
+            <span className="font-bold text-orange-200 bg-orange-900/50 px-1.5 py-0.5 rounded">&quot;invoice&quot;</span> and{" "}
+            <span className="font-bold text-orange-200 bg-orange-900/50 px-1.5 py-0.5 rounded">&quot;immediately&quot;</span> drop by more than{" "}
+            <span className="font-bold text-orange-200 bg-orange-900/50 px-1.5 py-0.5 rounded">90%</span>.
           </p>
         </section>
       </div>
 
       {/* Model comparison */}
-      <section className="rounded-2xl border border-slate-100 bg-white/70 px-4 py-4 md:px-6 md:py-5 shadow-sm mb-8 md:mb-10">
+      <section className="rounded-2xl border-2 border-teal-200 bg-white px-4 py-4 md:px-6 md:py-5 shadow-lg mb-8 md:mb-10">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <h2 className="text-sm font-semibold text-slate-900">Model Comparison</h2>
-            <p className="mt-1 text-xs text-slate-500">
+            <h2 className="text-base font-bold text-teal-900">Model Comparison</h2>
+            <p className="mt-1 text-xs text-slate-700 font-medium">
               Clean-text models struggle to predict which emails will be obfuscated. Models trained
               directly on poisoned text learn Unicode artifacts and perform strongly.
             </p>
           </div>
-          <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[0.65rem] font-medium text-slate-600">
+          <span className="inline-flex items-center rounded-full border-2 border-teal-500 bg-gradient-to-r from-teal-500 to-emerald-600 text-white px-3 py-1.5 text-[0.7rem] font-bold shadow-md">
             Character-level modeling · Logistic Regression
           </span>
         </div>
@@ -212,25 +220,25 @@ const BECAdversarialDashboard: React.FC = () => {
         <div className="mt-4 overflow-x-auto">
           <table className="min-w-full text-xs md:text-sm border-collapse">
             <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/70">
-                <Th>Model</Th>
-                <Th>Input</Th>
-                <Th>Primary Signal</Th>
-                <Th>F1 (modified class)</Th>
-                <Th>Notes</Th>
+              <tr className="border-b-2 border-teal-300 bg-gradient-to-r from-teal-600 to-emerald-600">
+                <Th className="text-white">Model</Th>
+                <Th className="text-white">Input</Th>
+                <Th className="text-white">Primary Signal</Th>
+                <Th className="text-white">F1 (modified class)</Th>
+                <Th className="text-white">Notes</Th>
               </tr>
             </thead>
             <tbody>
               {modelRows.map((row, idx) => (
                 <tr
                   key={row.name}
-                  className={idx % 2 === 0 ? "bg-white" : "bg-slate-50/40"}
+                  className={idx % 2 === 0 ? "bg-white hover:bg-teal-50" : "bg-teal-50/50 hover:bg-teal-100"}
                 >
-                  <Td className="font-medium text-slate-900">{row.name}</Td>
-                  <Td>{row.input}</Td>
-                  <Td>{row.focus}</Td>
-                  <Td className="font-semibold text-slate-900">{row.f1Modified}</Td>
-                  <Td className="text-slate-500">{row.note}</Td>
+                  <Td className="font-bold text-slate-900">{row.name}</Td>
+                  <Td className="font-medium text-slate-700">{row.input}</Td>
+                  <Td className="font-medium text-slate-700">{row.focus}</Td>
+                  <Td className="font-bold text-emerald-700 text-base">{row.f1Modified}</Td>
+                  <Td className="text-slate-700 font-medium">{row.note}</Td>
                 </tr>
               ))}
             </tbody>
@@ -240,9 +248,9 @@ const BECAdversarialDashboard: React.FC = () => {
 
       {/* Insights + Tech stack */}
       <section className="grid gap-6 md:grid-cols-3">
-        <div className="md:col-span-2 rounded-2xl border border-slate-100 bg-white/70 px-4 py-4 md:px-6 md:py-5 shadow-sm">
-          <h2 className="text-sm font-semibold text-slate-900">Key Insights</h2>
-          <ul className="mt-3 space-y-2 text-sm text-slate-700">
+        <div className="md:col-span-2 rounded-2xl border-2 border-green-200 bg-white px-4 py-4 md:px-6 md:py-5 shadow-lg">
+          <h2 className="text-base font-bold text-green-900">Key Insights</h2>
+          <ul className="mt-3 space-y-2 text-sm text-slate-800 font-medium">
             <li className="flex gap-2">
               <Bullet />
               <span>
@@ -281,16 +289,16 @@ const BECAdversarialDashboard: React.FC = () => {
           </ul>
         </div>
 
-        <div className="rounded-2xl border border-slate-100 bg-white/70 px-4 py-4 md:px-5 md:py-5 shadow-sm">
-          <h2 className="text-sm font-semibold text-slate-900">Tech Stack</h2>
-          <p className="mt-1 text-xs text-slate-500">
+        <div className="rounded-2xl border-2 border-cyan-200 bg-white px-4 py-4 md:px-5 md:py-5 shadow-lg">
+          <h2 className="text-base font-bold text-cyan-900">Tech Stack</h2>
+          <p className="mt-1 text-xs text-slate-700 font-medium">
             Tools and concepts I used to build and analyze this project.
           </p>
           <div className="mt-3 flex flex-wrap gap-1.5">
             {techStack.map((t) => (
               <span
                 key={t}
-                className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[0.7rem] font-medium text-slate-700"
+                className="inline-flex items-center rounded-full border-2 border-cyan-400 bg-gradient-to-r from-cyan-500 to-teal-600 text-white px-3 py-1.5 text-[0.7rem] font-bold shadow-md"
               >
                 {t}
               </span>
@@ -303,7 +311,7 @@ const BECAdversarialDashboard: React.FC = () => {
 };
 
 const Tag: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[0.7rem] font-medium text-slate-700">
+  <span className="inline-flex items-center rounded-full border-2 border-emerald-400 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-3 py-1.5 text-[0.75rem] font-bold shadow-md">
     {children}
   </span>
 );
@@ -314,12 +322,12 @@ const PipelineStep: React.FC<{ step: string; title: string; body: string }> = ({
   body,
 }) => (
   <li className="flex gap-3">
-    <div className="mt-0.5 flex h-7 w-7 items-center justify-center rounded-full bg-slate-900 text-[0.7rem] font-semibold text-slate-50">
+    <div className="mt-0.5 flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-emerald-600 to-teal-600 text-[0.7rem] font-bold text-white shadow-md">
       {step}
     </div>
     <div>
-      <p className="text-xs font-semibold text-slate-900">{title}</p>
-      <p className="mt-1 text-xs text-slate-600">{body}</p>
+      <p className="text-xs font-bold text-emerald-900">{title}</p>
+      <p className="mt-1 text-xs text-slate-700 font-medium">{body}</p>
     </div>
   </li>
 );
@@ -331,7 +339,7 @@ const Th: React.FC<React.HTMLAttributes<HTMLTableCellElement>> = ({
 }) => (
   <th
     className={
-      "px-3 py-2 text-left text-[0.7rem] font-semibold uppercase tracking-wide text-slate-500 " +
+      "px-3 py-2 text-left text-[0.7rem] font-bold uppercase tracking-wide " +
       (className ?? "")
     }
     {...rest}
@@ -345,13 +353,13 @@ const Td: React.FC<React.HTMLAttributes<HTMLTableCellElement>> = ({
   className,
   ...rest
 }) => (
-  <td className={"px-3 py-2 align-top text-xs text-slate-700 " + (className ?? "")} {...rest}>
+  <td className={"px-3 py-2 align-top text-xs " + (className ?? "")} {...rest}>
     {children}
   </td>
 );
 
 const Bullet: React.FC = () => (
-  <span className="mt-1 inline-block h-1.5 w-1.5 rounded-full bg-slate-400 flex-shrink-0" />
+  <span className="mt-1 inline-block h-2 w-2 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 flex-shrink-0 shadow-sm" />
 );
 
 export default BECAdversarialDashboard;
