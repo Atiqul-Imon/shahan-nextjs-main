@@ -83,37 +83,49 @@ const PHISHING_ROBUSTNESS_DASHBOARD_PROJECT: Project = {
   createdAt: new Date().toISOString(),
 };
 
+// Hardcoded projects - shown immediately
+const HARDCODED_PROJECTS = [
+  BEC_ADVERSARIAL_DASHBOARD_PROJECT,
+  CANCER_PREDICTION_PIPELINE_PROJECT,
+  PHISHING_ROBUSTNESS_DASHBOARD_PROJECT,
+  MUNICIPAL_COURT_ANALYSIS_PROJECT,
+  QSR_ANALYSIS_PROJECT,
+  ML_DASHBOARD_PROJECT,
+];
+
 const ProjectPage = () => {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
+  // Show hardcoded projects immediately - no loading state needed
+  const [projects, setProjects] = useState<Project[]>(HARDCODED_PROJECTS);
+  const [isLoadingDbProjects, setIsLoadingDbProjects] = useState(false);
 
   useEffect(() => {
-    const fetchProjects = async () => {
+    // Fetch database projects in the background (non-blocking)
+    const fetchDbProjects = async () => {
+      setIsLoadingDbProjects(true);
       try {
-        const response = await apiClient.getProjects() as { data?: Project[] };
-        const dbProjects = response.data || [];
+        // Add timeout to prevent long waits
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Timeout')), 2000)
+        );
         
-        // Combine hardcoded projects with database projects
-        const allProjects = [
-          BEC_ADVERSARIAL_DASHBOARD_PROJECT,
-          CANCER_PREDICTION_PIPELINE_PROJECT,
-          PHISHING_ROBUSTNESS_DASHBOARD_PROJECT,
-          MUNICIPAL_COURT_ANALYSIS_PROJECT,
-          QSR_ANALYSIS_PROJECT,
-          ML_DASHBOARD_PROJECT,
-          ...dbProjects,
-        ];
-        setProjects(allProjects);
+        const fetchPromise = apiClient.getProjects() as Promise<{ data?: Project[] }>;
+        const response = await Promise.race([fetchPromise, timeoutPromise]) as { data?: Project[] };
+        
+        const dbProjects = response.data || [];
+        if (dbProjects.length > 0) {
+          // Append database projects to hardcoded ones
+          setProjects(prev => [...prev, ...dbProjects]);
+        }
       } catch (error) {
-        console.error('Error fetching projects:', error);
-        // If API fails, show at least the hardcoded projects
-        setProjects([QSR_ANALYSIS_PROJECT, ML_DASHBOARD_PROJECT]);
+        // Silently fail - we already have hardcoded projects showing
+        console.error('Error fetching database projects:', error);
       } finally {
-        setLoading(false);
+        setIsLoadingDbProjects(false);
       }
     };
 
-    fetchProjects();
+    // Fetch in background without blocking render
+    fetchDbProjects();
   }, []);
 
   const formatDate = (dateString: string) => {
@@ -144,27 +156,7 @@ const ProjectPage = () => {
     return gradients[Math.floor(Math.random() * gradients.length)];
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-900 py-16">
-        <div className="container mx-auto px-6">
-          <h1 className="text-4xl font-bold text-center mb-12 text-gray-100">
-            My Projects
-          </h1>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-gray-800 rounded-lg p-6 animate-pulse">
-                <div className="h-48 bg-gray-700 rounded-lg mb-4"></div>
-                <div className="h-6 bg-gray-700 rounded mb-2"></div>
-                <div className="h-4 bg-gray-700 rounded mb-4"></div>
-                <div className="h-4 bg-gray-700 rounded w-2/3"></div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // No loading state - projects show immediately
 
   return (
     <div className="min-h-screen bg-gray-900 py-16">

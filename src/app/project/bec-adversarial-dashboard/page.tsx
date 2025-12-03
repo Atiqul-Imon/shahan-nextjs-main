@@ -75,7 +75,7 @@ const techStack = [
 
 const BECAdversarialDashboard: React.FC = () => {
   return (
-    <section className="w-full max-w-6xl mx-auto px-4 py-10 md:py-14 bg-gradient-to-br from-emerald-50/30 via-white to-teal-50/20">
+    <section className="w-full max-w-6xl mx-auto px-4 py-10 md:py-14 bg-gray-50">
       {/* Header */}
       <header className="mb-8 md:mb-10">
         <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-1.5 text-xs font-semibold text-white shadow-md">
