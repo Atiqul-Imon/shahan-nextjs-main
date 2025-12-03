@@ -50,6 +50,39 @@ const MUNICIPAL_COURT_ANALYSIS_PROJECT: Project = {
   createdAt: new Date('2025-10-31').toISOString(),
 };
 
+const BEC_ADVERSARIAL_DASHBOARD_PROJECT: Project = {
+  _id: 'bec-adversarial-dashboard',
+  title: 'Social Engineering & Adversarial Obfuscation in BEC Attacks',
+  description: 'Analyzed how Unicode-based adversarial techniques (homoglyphs and zero-width characters) break keyword-based phishing detection, and built a character-level model that reliably detects these obfuscation patterns in BEC phishing emails with 95.4% accuracy.',
+  technologies: ['Python', 'Pandas', 'Scikit-learn', 'NLP', 'Adversarial ML', 'Unicode / Homoglyphs', 'Character-level modeling'],
+  images: [],
+  liveUrl: '/project/bec-adversarial-dashboard',
+  sourceUrl: undefined,
+  createdAt: new Date().toISOString(),
+};
+
+const CANCER_PREDICTION_PIPELINE_PROJECT: Project = {
+  _id: 'cancer-prediction-pipeline',
+  title: 'Cancer Risk Prediction Pipeline',
+  description: 'End-to-end machine learning pipeline achieving 93% accuracy in predicting high-risk cancer patients using CMS Medicare claims data on Databricks. Features Delta Lake architecture, MLflow tracking, and 100% recall for critical healthcare applications.',
+  technologies: ['Databricks', 'PySpark', 'Delta Lake', 'MLflow', 'scikit-learn', 'Python', 'Healthcare Analytics'],
+  images: [],
+  liveUrl: '/project/cancer-prediction-pipeline',
+  sourceUrl: undefined,
+  createdAt: new Date().toISOString(),
+};
+
+const PHISHING_ROBUSTNESS_DASHBOARD_PROJECT: Project = {
+  _id: 'phishing-robustness-dashboard',
+  title: 'Robustness of Phishing Detection Under Adversarial Unicode Obfuscation',
+  description: 'Evaluated how a modern ML-based phishing vs benign classifier behaves when phishing emails are adversarially obfuscated using Unicode homoglyphs and zero-width characters. Achieved 99.8% accuracy with 100% phishing recall, demonstrating robustness compared to keyword-based methods.',
+  technologies: ['Python', 'Pandas', 'Scikit-learn', 'TF-IDF', 'Logistic Regression', 'Hugging Face Datasets', 'Adversarial ML', 'Email Security'],
+  images: [],
+  liveUrl: '/project/phishing-robustness-dashboard',
+  sourceUrl: undefined,
+  createdAt: new Date().toISOString(),
+};
+
 const ProjectPage = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -62,6 +95,9 @@ const ProjectPage = () => {
         
         // Combine hardcoded projects with database projects
         const allProjects = [
+          BEC_ADVERSARIAL_DASHBOARD_PROJECT,
+          CANCER_PREDICTION_PIPELINE_PROJECT,
+          PHISHING_ROBUSTNESS_DASHBOARD_PROJECT,
           MUNICIPAL_COURT_ANALYSIS_PROJECT,
           QSR_ANALYSIS_PROJECT,
           ML_DASHBOARD_PROJECT,
@@ -92,6 +128,9 @@ const ProjectPage = () => {
     if (projectId === 'ml-dashboard') return '/project/ml-dashboard';
     if (projectId === 'qsr-analysis') return '/project/qsr-analysis';
     if (projectId === 'municipal-court-case-analysis-austin') return '/project/municipal-court-case-analysis-austin';
+    if (projectId === 'bec-adversarial-dashboard') return '/project/bec-adversarial-dashboard';
+    if (projectId === 'cancer-prediction-pipeline') return '/project/cancer-prediction-pipeline';
+    if (projectId === 'phishing-robustness-dashboard') return '/project/phishing-robustness-dashboard';
     return `/project/${projectId}`;
   };
 
