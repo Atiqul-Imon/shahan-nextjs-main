@@ -1,6 +1,6 @@
 'use client';
 
-import { FaSearch, FaDatabase, FaChartBar, FaGlobe, FaGithub, FaLinkedin, FaGoogle } from "react-icons/fa";
+import { FaSearch, FaDatabase, FaChartBar, FaGlobe, FaGithub, FaLinkedin, FaGoogle, FaBrain } from "react-icons/fa";
 import { Download, ArrowRight } from "lucide-react";
 import Image from "next/image";
 
@@ -42,6 +42,14 @@ const Hero = () => {
   ];
 
   const specialties = [
+    {
+      icon: FaBrain,
+      title: "Data Scientist",
+      description: "Building ML models and advanced analytics solutions to solve complex problems.",
+      color: "text-orange-500",
+      bgColor: "bg-orange-500/10",
+      borderColor: "border-orange-500/20"
+    },
     {
       icon: FaSearch,
       title: "Research Analyst",
@@ -85,11 +93,11 @@ const Hero = () => {
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-green-500/5 rounded-full blur-3xl animate-pulse-slow"></div>
       </div>
 
-      <div className="relative z-10 container mx-auto px-6">
+      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Content */}
-        <div className="text-center max-w-4xl mx-auto">
+        <div className="text-center">
           {/* Header Section */}
-          <div className="mb-12 animate-fade-in">
+          <div className="mb-12 animate-fade-in max-w-4xl mx-auto">
             <h1 className="text-5xl md:text-7xl font-bold mb-6 text-gray-100">
               Shahan Ahmed
             </h1>
@@ -112,29 +120,29 @@ const Hero = () => {
           </div>
 
           {/* Specialties Grid */}
-          <div className="animate-slide-up">
+          <div className="animate-slide-up w-full">
             <h2 className="text-3xl font-bold mb-12 text-gray-100">
               Specializing in
             </h2>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 lg:gap-8 max-w-[1600px] mx-auto px-4">
               {specialties.map((specialty, index) => {
                 const Icon = specialty.icon;
                 return (
                   <div
                     key={index}
-                    className={`group p-6 rounded-2xl border transition-all duration-300 hover:scale-105 hover:shadow-large ${specialty.bgColor} ${specialty.borderColor} backdrop-blur-sm`}
+                    className={`group p-6 lg:p-8 rounded-2xl border transition-all duration-300 hover:scale-105 hover:shadow-large ${specialty.bgColor} ${specialty.borderColor} backdrop-blur-sm min-h-[200px] flex flex-col`}
                     style={{ animationDelay: `${index * 0.1}s` }}
                   >
                     <div className="flex items-center mb-4">
-                      <div className={`p-3 rounded-xl bg-gray-900/50 border-gray-700 border`}>
-                        <Icon className={`text-2xl ${specialty.color}`} />
+                      <div className={`p-3 lg:p-4 rounded-xl bg-gray-900/50 border-gray-700 border`}>
+                        <Icon className={`text-2xl lg:text-3xl ${specialty.color}`} />
                       </div>
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-100 mb-3 group-hover:text-blue-200 transition-colors duration-200">
+                    <h3 className="text-lg lg:text-xl font-semibold text-gray-100 mb-3 group-hover:text-blue-200 transition-colors duration-200">
                       {specialty.title}
                     </h3>
-                    <p className="text-gray-400 leading-relaxed text-sm">
+                    <p className="text-gray-400 leading-relaxed text-sm lg:text-base flex-grow">
                       {specialty.description}
                     </p>
                   </div>
@@ -144,7 +152,7 @@ const Hero = () => {
           </div>
 
           {/* Social Links */}
-          <div className="mt-16 animate-fade-in" style={{ animationDelay: '0.5s' }}>
+          <div className="mt-16 animate-fade-in max-w-4xl mx-auto" style={{ animationDelay: '0.5s' }}>
             <h3 className="text-2xl font-semibold text-gray-100 mb-8">
               Connect with Me
             </h3>
