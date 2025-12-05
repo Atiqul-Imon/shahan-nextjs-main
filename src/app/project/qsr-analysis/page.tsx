@@ -278,10 +278,6 @@ const QSRAnalysisProject = () => {
       <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">
-            <div className="inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-semibold mb-6">
-              <Zap className="w-4 h-4 mr-2" />
-              Data Science Project
-            </div>
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
               🍔 QSR POS Sales Analysis
             </h1>

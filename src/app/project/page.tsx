@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { apiClient } from '@/lib/api';
 import { Code, Calendar, ArrowRight, ExternalLink } from 'lucide-react';
+import { PortfolioSchema } from '@/components/StructuredData';
 
 interface Project {
   _id: string;
@@ -160,6 +161,7 @@ const ProjectPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 py-16">
+      <PortfolioSchema />
       <div className="container mx-auto px-6">
         <h1 className="text-4xl font-bold text-center mb-12 text-gray-100">
           My Projects

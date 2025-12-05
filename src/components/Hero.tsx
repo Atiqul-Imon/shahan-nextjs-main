@@ -103,7 +103,7 @@ const Hero = () => {
             </h1>
             
             <p className="text-xl md:text-2xl text-gray-400 mb-8 leading-relaxed">
-              Transforming data into insights, building innovative solutions, and creating meaningful digital experiences
+              Data Scientist & Machine Learning Engineer | Transforming data into insights, building innovative solutions, and creating meaningful digital experiences
             </p>
 
             {/* CTA Buttons */}
