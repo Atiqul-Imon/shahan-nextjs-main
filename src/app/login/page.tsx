@@ -1,13 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { apiClient } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { User, Lock } from 'lucide-react';
 
-const LoginPage = () => {
+const LoginForm = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -15,8 +15,10 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState(false);
-  const router = useRouter();
+  const searchParams = useSearchParams();
   const { login } = useAuth();
+
+  // Note: Middleware handles redirecting authenticated users away from login page
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
@@ -38,6 +40,8 @@ const LoginPage = () => {
           accessToken: string;
           email: string;
           userId: string;
+          name?: string;
+          role?: string;
         };
         message?: string;
       };
@@ -45,14 +49,22 @@ const LoginPage = () => {
       if (response.success && response.data) {
         login(response.data.accessToken, {
           _id: response.data.userId,
-          name: '',
-          email: response.data.email
+          name: response.data.name || '',
+          email: response.data.email,
+          role: response.data.role || 'user'
         });
         
         setMessage('Login successful! Redirecting...');
         
-        // Navigate to dashboard immediately
-        router.push('/dashboard');
+        // Get redirect URL or default to dashboard
+        const redirect = searchParams.get('redirect') || '/dashboard';
+        
+        // The cookie is set by the API response headers
+        // Use a full page reload to ensure cookie is sent with the request
+        // The middleware will verify the cookie and allow access
+        setTimeout(() => {
+          window.location.href = redirect;
+        }, 300);
       } else {
         setError(true);
         setMessage(response.message || 'Login failed');
@@ -128,6 +140,20 @@ const LoginPage = () => {
         </p>
       </div>
     </div>
+  );
+};
+
+const LoginPage = () => {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
+        <div className="bg-gray-800 p-8 rounded-lg shadow-xl w-full max-w-md">
+          <div className="text-gray-200 text-center">Loading...</div>
+        </div>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 };
 

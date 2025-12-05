@@ -6,6 +6,7 @@ interface User {
   _id: string;
   name: string;
   email: string;
+  role?: string;
   [key: string]: unknown;
 }
 
@@ -56,12 +57,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(userData);
   };
 
-  const logout = () => {
+  const logout = async () => {
+    // Clear localStorage
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
     localStorage.removeItem('email');
     localStorage.removeItem('userId');
+    
+    // Clear cookie by calling logout API
+    try {
+      await fetch('/api/user/logout', { method: 'POST' });
+    } catch (error) {
+      console.error('Error clearing cookie:', error);
+    }
+    
     setIsLogin(false);
     setUser(null);
   };

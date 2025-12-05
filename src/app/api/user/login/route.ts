@@ -39,8 +39,8 @@ export async function POST(request: NextRequest) {
     user.refresh_token = refreshToken;
     await user.save();
 
-    // Success response
-    return NextResponse.json({
+    // Create response with token in cookie
+    const response = NextResponse.json({
       message: "Login successful",
       success: true,
       error: false,
@@ -48,9 +48,22 @@ export async function POST(request: NextRequest) {
         accessToken,
         refreshToken,
         email: user.email,
-        userId: user._id
+        userId: user._id,
+        name: user.name,
+        role: user.role || 'user'
       },
     });
+
+    // Set access token in httpOnly cookie for server-side middleware
+    response.cookies.set('accessToken', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 15, // 15 minutes (matches token expiry)
+      path: '/',
+    });
+
+    return response;
 
   } catch (error) {
     console.error("Login error:", error);

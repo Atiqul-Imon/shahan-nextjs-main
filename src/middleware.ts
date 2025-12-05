@@ -92,8 +92,56 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // Dashboard routes are handled by client-side authentication in the layout
-  // No server-side redirect needed for dashboard pages
+  // Protect dashboard routes server-side
+  if (request.nextUrl.pathname.startsWith('/dashboard')) {
+    const token =
+      request.cookies.get('accessToken')?.value ||
+      request.headers.get('authorization')?.replace('Bearer ', '') ||
+      '';
+
+    if (!token) {
+      const loginUrl = new URL('/login', request.url);
+      loginUrl.searchParams.set('redirect', request.nextUrl.pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+
+    const decoded = verifyAccessToken(token);
+    if (!decoded) {
+      // Clear invalid token cookie
+      const loginUrl = new URL('/login', request.url);
+      loginUrl.searchParams.set('redirect', request.nextUrl.pathname);
+      const redirectResponse = NextResponse.redirect(loginUrl);
+      redirectResponse.cookies.delete('accessToken');
+      redirectResponse.cookies.set('accessToken', '', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 0,
+        path: '/',
+      });
+      return redirectResponse;
+    }
+    
+    // Token is valid, allow access
+    return response || NextResponse.next();
+  }
+
+  // Don't redirect login page if user has valid token (prevent loop)
+  if (request.nextUrl.pathname === '/login') {
+    const token =
+      request.cookies.get('accessToken')?.value ||
+      request.headers.get('authorization')?.replace('Bearer ', '') ||
+      '';
+
+    if (token) {
+      const decoded = verifyAccessToken(token);
+      if (decoded) {
+        // User is already authenticated, redirect to dashboard or redirect param
+        const redirect = request.nextUrl.searchParams.get('redirect') || '/dashboard';
+        return NextResponse.redirect(new URL(redirect, request.url));
+      }
+    }
+  }
 
   return response || NextResponse.next();
 }
@@ -101,5 +149,8 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     '/api/:path*',
+    '/dashboard/:path*',
+    '/dashboard',
+    '/login',
   ],
 }; 

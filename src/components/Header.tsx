@@ -4,12 +4,14 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { Menu, X, LogOut, Home, Briefcase, MessageCircle, BarChart3 } from 'lucide-react';
+import { Menu, X, LogOut, Home, Briefcase, MessageCircle, BarChart3, Calendar } from 'lucide-react';
+import AppointmentModal from './AppointmentModal';
 
 const Header = () => {
   const { isLogin, isLoading, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [appointmentModalOpen, setAppointmentModalOpen] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -73,8 +75,17 @@ const Header = () => {
               );
             })}
 
-            {/* Auth Section */}
-            {!isLoading && isLogin && (
+            {/* Talk to Me Button */}
+            <button
+              onClick={() => setAppointmentModalOpen(true)}
+              className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold hover:shadow-lg transition-all duration-200"
+            >
+              <Calendar size={18} />
+              <span>Talk to Me</span>
+            </button>
+
+            {/* Auth Section - Only show when logged in */}
+            {!isLoading && isLogin ? (
               <div className="flex items-center space-x-4 ml-4 pl-4 border-l border-gray-700">
                 <Link
                   href="/dashboard"
@@ -91,7 +102,14 @@ const Header = () => {
                   <span>Logout</span>
                 </button>
               </div>
-            )}
+            ) : !isLoading && !isLogin ? (
+              <Link
+                href="/login"
+                className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-all duration-200 font-medium ml-4"
+              >
+                <span>Login</span>
+              </Link>
+            ) : null}
           </nav>
 
           {/* Mobile Menu Button */}
@@ -130,8 +148,20 @@ const Header = () => {
                   );
                 })}
 
-                {/* Mobile Auth Section */}
-                {!isLoading && isLogin && (
+                {/* Mobile Talk to Me Button */}
+                <button
+                  onClick={() => {
+                    setAppointmentModalOpen(true);
+                    toggleMenu();
+                  }}
+                  className="flex items-center space-x-3 px-4 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold w-full"
+                >
+                  <Calendar size={20} />
+                  <span>Talk to Me</span>
+                </button>
+
+                {/* Mobile Auth Section - Only show when logged in */}
+                {!isLoading && isLogin ? (
                   <div className="pt-3 border-t border-gray-700">
                     <div className="space-y-3">
                       <Link
@@ -151,12 +181,28 @@ const Header = () => {
                       </button>
                     </div>
                   </div>
-                )}
+                ) : !isLoading && !isLogin ? (
+                  <div className="pt-3 border-t border-gray-700">
+                    <Link
+                      href="/login"
+                      onClick={toggleMenu}
+                      className="flex items-center space-x-3 px-4 py-3 rounded-lg bg-blue-600 text-white font-medium"
+                    >
+                      <span>Login</span>
+                    </Link>
+                  </div>
+                ) : null}
               </nav>
             </div>
           </div>
         )}
       </div>
+
+      {/* Appointment Modal */}
+      <AppointmentModal
+        isOpen={appointmentModalOpen}
+        onClose={() => setAppointmentModalOpen(false)}
+      />
     </header>
   );
 };
