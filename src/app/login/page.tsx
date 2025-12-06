@@ -77,11 +77,23 @@ const LoginForm = () => {
         // Ensure redirect starts with / to make it an absolute path
         const redirectPath = redirect.startsWith('/') ? redirect : `/${redirect}`;
         
-        // Use window.location for a full page reload to ensure auth state is properly initialized
-        // This is more reliable in production where client-side state might not sync immediately
-        setTimeout(() => {
-          window.location.href = redirectPath;
-        }, 200);
+        // Verify localStorage is set before redirecting
+        // Use a longer delay in production to ensure everything is saved
+        const verifyAndRedirect = () => {
+          const accessToken = localStorage.getItem('accessToken');
+          const userData = localStorage.getItem('user');
+          
+          if (accessToken && userData) {
+            // localStorage is set, safe to redirect
+            window.location.href = redirectPath;
+          } else {
+            // Retry after a short delay if localStorage isn't ready
+            setTimeout(verifyAndRedirect, 100);
+          }
+        };
+        
+        // Start verification after a short delay
+        setTimeout(verifyAndRedirect, 300);
       } else {
         setError(true);
         setMessage(response.message || 'Login failed');

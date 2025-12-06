@@ -113,11 +113,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // Check immediately and set loading to false
     checkAuth();
     setIsLoading(false);
-
+    
+    // In production, sometimes the initial check might miss localStorage
+    // Do an additional check after a short delay to ensure we catch it
+    const doubleCheck = setTimeout(() => {
+      const accessToken = localStorage.getItem('accessToken');
+      const userData = localStorage.getItem('user');
+      
+      if (accessToken && userData) {
+        try {
+          const parsedUser = JSON.parse(userData);
+          if (isTokenValidFormat(accessToken)) {
+            // Force update auth state if we have valid tokens
+            setIsLogin(true);
+            setUser(parsedUser);
+          }
+        } catch (error) {
+          // Ignore errors in double check
+        }
+      }
+    }, 300);
+    
     // Check token validity every 5 minutes
     const interval = setInterval(checkAuth, 5 * 60 * 1000);
     
-    return () => clearInterval(interval);
+    return () => {
+      clearTimeout(doubleCheck);
+      clearInterval(interval);
+    };
   }, []);
 
   const login = useCallback((token: string, refreshToken: string, userData: User) => {

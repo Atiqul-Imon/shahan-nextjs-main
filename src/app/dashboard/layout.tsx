@@ -25,21 +25,36 @@ export default function DashboardLayout({
         return !!(accessToken && userData);
       };
 
-      // Give AuthContext a moment to initialize, then check localStorage
-      const timer = setTimeout(() => {
-        setIsCheckingAuth(false);
+      // Give AuthContext more time to initialize in production
+      // Check localStorage multiple times to ensure we catch the auth state
+      let attempts = 0;
+      const maxAttempts = 10; // Check for up to 1 second (10 * 100ms)
+      
+      const checkAuth = () => {
+        attempts++;
+        const hasAuth = checkLocalStorage();
         
-        // If AuthContext says not logged in, double-check localStorage
-        if (!isLoading && !isLogin) {
-          const hasAuth = checkLocalStorage();
-          if (!hasAuth) {
-            // Store current path for redirect after login
+        if (hasAuth) {
+          // We have auth in localStorage, AuthContext should catch up
+          setIsCheckingAuth(false);
+        } else if (attempts >= maxAttempts) {
+          // After max attempts, stop checking and proceed
+          setIsCheckingAuth(false);
+          
+          // If still no auth, redirect to login
+          if (!isLoading && !isLogin) {
             const currentPath = window.location.pathname;
             router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
           }
+        } else {
+          // Continue checking
+          setTimeout(checkAuth, 100);
         }
-      }, 100);
-
+      };
+      
+      // Start checking after initial delay
+      const timer = setTimeout(checkAuth, 150);
+      
       return () => clearTimeout(timer);
     }
   }, [isLogin, isLoading, router]);
@@ -76,8 +91,10 @@ export default function DashboardLayout({
       const accessToken = localStorage.getItem('accessToken');
       const userData = localStorage.getItem('user');
       
-      // If we have tokens in localStorage, wait a bit more for AuthContext to catch up
+      // If we have tokens in localStorage, wait longer for AuthContext to catch up
+      // This handles the case where localStorage is set but AuthContext hasn't updated yet
       if (accessToken && userData) {
+        // Wait up to 2 seconds for AuthContext to initialize
         return (
           <div className="min-h-screen bg-gray-900 flex items-center justify-center">
             <div className="text-gray-200">Loading...</div>
