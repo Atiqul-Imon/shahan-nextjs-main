@@ -3,6 +3,8 @@ import connectDB from '@/lib/db';
 import Project from '@/models/Project';
 import { verifyAccessToken } from '@/lib/auth';
 import cloudinary from '@/lib/cloudinary';
+import { sanitizeString, INPUT_LIMITS, isValidUrl, validateFile } from '@/lib/validation';
+import { verifyAuth, checkRequestSize } from '@/lib/security';
 
 interface CloudinaryUploadResult {
   secure_url: string;
@@ -47,15 +49,18 @@ export async function POST(request: NextRequest) {
     await connectDB();
 
     // Verify authentication
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader) {
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    const auth = verifyAuth(request);
+    if (!auth.valid) {
+      return NextResponse.json({ message: auth.error || 'Unauthorized' }, { status: 401 });
     }
 
-    const token = authHeader.replace('Bearer ', '');
-    const decoded = verifyAccessToken(token);
-    if (!decoded) {
-      return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
+    // Check request size (for file uploads, allow larger size)
+    const contentLength = request.headers.get('content-length');
+    const sizeCheck = checkRequestSize(contentLength, 50 * 1024 * 1024); // 50MB for file uploads
+    if (!sizeCheck.valid) {
+      return NextResponse.json({
+        message: sizeCheck.error || 'Request too large'
+      }, { status: 413 });
     }
 
     const formData = await request.formData();
@@ -67,10 +72,68 @@ export async function POST(request: NextRequest) {
     const status = formData.get('status') as string;
     const images = formData.getAll('images') as File[];
 
+    // Validate required fields
     if (!title || !description) {
       return NextResponse.json({
         message: 'Title and description are required'
       }, { status: 400 });
+    }
+
+    // Sanitize and validate inputs
+    const sanitizedTitle = sanitizeString(title);
+    const sanitizedDescription = sanitizeString(description);
+
+    if (sanitizedTitle.length < INPUT_LIMITS.title.min || sanitizedTitle.length > INPUT_LIMITS.title.max) {
+      return NextResponse.json({
+        message: `Title must be between ${INPUT_LIMITS.title.min} and ${INPUT_LIMITS.title.max} characters`
+      }, { status: 400 });
+    }
+
+    if (sanitizedDescription.length > INPUT_LIMITS.description.max) {
+      return NextResponse.json({
+        message: `Description must be no more than ${INPUT_LIMITS.description.max} characters`
+      }, { status: 400 });
+    }
+
+    // Validate URLs if provided
+    if (liveUrl && !isValidUrl(liveUrl)) {
+      return NextResponse.json({
+        message: 'Invalid live URL format'
+      }, { status: 400 });
+    }
+
+    if (sourceUrl && !isValidUrl(sourceUrl)) {
+      return NextResponse.json({
+        message: 'Invalid source URL format'
+      }, { status: 400 });
+    }
+
+    // Validate status
+    if (status && !['draft', 'published'].includes(status)) {
+      return NextResponse.json({
+        message: 'Status must be either "draft" or "published"'
+      }, { status: 400 });
+    }
+
+    // Validate and limit number of images
+    if (images.length > 10) {
+      return NextResponse.json({
+        message: 'Maximum 10 images allowed per project'
+      }, { status: 400 });
+    }
+
+    // Validate each image file
+    for (const image of images) {
+      const fileValidation = validateFile(image, {
+        maxSize: 5 * 1024 * 1024, // 5MB per image
+        allowedTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
+      });
+      
+      if (!fileValidation.valid) {
+        return NextResponse.json({
+          message: fileValidation.error || 'Invalid image file'
+        }, { status: 400 });
+      }
     }
 
     // Upload images to Cloudinary in parallel instead of sequentially
@@ -101,13 +164,37 @@ export async function POST(request: NextRequest) {
     // Wait for all uploads to complete in parallel
     const uploadedImages = await Promise.all(uploadPromises);
 
+    // Parse and validate technologies
+    let technologiesArray: string[] = [];
+    if (technologies) {
+      try {
+        technologiesArray = JSON.parse(technologies);
+        if (!Array.isArray(technologiesArray)) {
+          return NextResponse.json({
+            message: 'Technologies must be an array'
+          }, { status: 400 });
+        }
+        if (technologiesArray.length > INPUT_LIMITS.technologies.max) {
+          return NextResponse.json({
+            message: `Maximum ${INPUT_LIMITS.technologies.max} technologies allowed`
+          }, { status: 400 });
+        }
+        // Sanitize each technology
+        technologiesArray = technologiesArray.map((tech: string) => sanitizeString(tech)).filter(Boolean);
+      } catch {
+        return NextResponse.json({
+          message: 'Invalid technologies format'
+        }, { status: 400 });
+      }
+    }
+
     const project = new Project({
-      title,
-      description,
-      technologies: technologies ? JSON.parse(technologies) : [],
-      liveUrl,
-      sourceUrl,
-      status: status || 'draft',
+      title: sanitizedTitle,
+      description: sanitizedDescription,
+      technologies: technologiesArray,
+      liveUrl: liveUrl ? sanitizeString(liveUrl) : undefined,
+      sourceUrl: sourceUrl ? sanitizeString(sourceUrl) : undefined,
+      status: (status as 'draft' | 'published') || 'draft',
       images: uploadedImages
     });
 

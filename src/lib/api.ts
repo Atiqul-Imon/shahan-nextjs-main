@@ -1,6 +1,9 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.origin ? `${window.location.origin}/api` : 'http://localhost:3000/api');
 
 class ApiClient {
+  private isRefreshing = false;
+  private refreshPromise: Promise<boolean> | null = null;
+
   private getHeaders(): HeadersInit {
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
@@ -14,9 +17,63 @@ class ApiClient {
     return headers;
   }
 
+  private async refreshTokenIfNeeded(): Promise<boolean> {
+    if (this.isRefreshing && this.refreshPromise) {
+      return this.refreshPromise;
+    }
+
+    this.isRefreshing = true;
+    this.refreshPromise = this.performTokenRefresh();
+    
+    const result = await this.refreshPromise;
+    this.isRefreshing = false;
+    this.refreshPromise = null;
+    
+    return result;
+  }
+
+  private async performTokenRefresh(): Promise<boolean> {
+    const refreshToken = typeof window !== 'undefined' ? localStorage.getItem('refreshToken') : null;
+    if (!refreshToken) {
+      return false;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/user/refresh`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ refreshToken }),
+      });
+
+      if (!response.ok) {
+        return false;
+      }
+
+      const data = await response.json();
+      
+      if (data.success && data.data) {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('accessToken', data.data.accessToken);
+          if (data.data.refreshToken) {
+            localStorage.setItem('refreshToken', data.data.refreshToken);
+          }
+        }
+        return true;
+      }
+      
+      return false;
+    } catch (error) {
+      console.error('Error refreshing token:', error);
+      return false;
+    }
+  }
+
   private async request<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
+    retryOnAuthError: boolean = true
   ): Promise<T> {
     const url = `${API_BASE_URL}${endpoint}`;
     const config: RequestInit = {
@@ -24,14 +81,64 @@ class ApiClient {
       ...options,
     };
 
-    const response = await fetch(url, config);
-    const data = await response.json();
+    try {
+      const response = await fetch(url, config);
+      const data = await response.json();
 
-    if (!response.ok) {
-      throw new Error(data.message || 'Request failed');
+      // Handle 401 Unauthorized - token expired
+      if (response.status === 401 && retryOnAuthError) {
+        // Try to refresh token
+        const refreshed = await this.refreshTokenIfNeeded();
+        
+        if (refreshed) {
+          // Retry request with new token
+          const retryConfig: RequestInit = {
+            ...config,
+            headers: this.getHeaders(),
+          };
+          const retryResponse = await fetch(url, retryConfig);
+          const retryData = await retryResponse.json();
+          
+          if (!retryResponse.ok) {
+            throw new Error(retryData.message || 'Request failed after token refresh');
+          }
+          
+          return retryData;
+        } else {
+          // Refresh failed, redirect to login
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+          }
+          throw new Error('Authentication failed. Please login again.');
+        }
+      }
+
+      if (!response.ok) {
+        // Handle network errors
+        if (!response.status) {
+          throw new Error('Network error. Please check your connection.');
+        }
+        
+        // Handle rate limiting
+        if (response.status === 429) {
+          throw new Error(data.message || 'Too many requests. Please try again later.');
+        }
+        
+        throw new Error(data.message || `Request failed with status ${response.status}`);
+      }
+
+      return data;
+    } catch (error) {
+      // Handle network errors
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        throw new Error('Network error. Please check your connection and try again.');
+      }
+      
+      throw error;
     }
-
-    return data;
   }
 
   // Auth endpoints

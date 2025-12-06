@@ -17,7 +17,9 @@ export default function DashboardLayout({
 
   useEffect(() => {
     if (!isLoading && !isLogin) {
-      router.push('/login');
+      // Store current path for redirect after login
+      const currentPath = window.location.pathname;
+      router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
     }
   }, [isLogin, isLoading, router]);
 

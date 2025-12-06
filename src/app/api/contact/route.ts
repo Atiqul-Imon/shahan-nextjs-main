@@ -2,22 +2,39 @@ import { NextRequest, NextResponse } from 'next/server';
 import { sendContactEmail } from '@/lib/email';
 import connectDB from '@/lib/db';
 import Contact from '@/models/Contact';
+import { isValidEmail, sanitizeString, INPUT_LIMITS } from '@/lib/validation';
+import { getClientIp, getUserAgent, checkRequestSize } from '@/lib/security';
 
 export async function POST(request: NextRequest) {
   try {
     await connectDB();
+
+    // Check request size
+    const contentLength = request.headers.get('content-length');
+    const sizeCheck = checkRequestSize(contentLength, 10 * 1024); // 10KB max for contact form
+    if (!sizeCheck.valid) {
+      return NextResponse.json({
+        success: false,
+        message: sizeCheck.error || 'Request too large'
+      }, { status: 413 });
+    }
 
     const body = await request.json();
     const { name, email, message, website } = body; // website is honeypot field
 
     // Honeypot check - if this field is filled, it's a bot
     if (website && website.trim() !== '') {
+      // Log potential bot attempt
+      const ip = getClientIp(request);
+      console.warn(`Potential bot detected from ${ip} - honeypot field filled`);
+      
       return NextResponse.json({
-        success: false,
+        success: true, // Return success to confuse bots
         message: 'Message sent successfully! I will get back to you soon.'
-      }, { status: 200 }); // Return success to confuse bots
+      }, { status: 200 });
     }
 
+    // Validate required fields
     if (!name || !email || !message) {
       return NextResponse.json({
         success: false,
@@ -25,34 +42,44 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
-    // Input length validation to prevent abuse
-    if (name.length > 100 || email.length > 255 || message.length > 5000) {
+    // Sanitize inputs
+    const sanitizedName = sanitizeString(name);
+    const sanitizedEmail = sanitizeString(email.toLowerCase());
+    const sanitizedMessage = sanitizeString(message);
+
+    // Validate name length
+    if (!sanitizedName || sanitizedName.length < INPUT_LIMITS.name.min || sanitizedName.length > INPUT_LIMITS.name.max) {
       return NextResponse.json({
         success: false,
-        message: 'Input fields are too long. Please keep them within limits.'
+        message: `Name must be between ${INPUT_LIMITS.name.min} and ${INPUT_LIMITS.name.max} characters`
       }, { status: 400 });
     }
 
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    // Validate email
+    if (!isValidEmail(sanitizedEmail)) {
       return NextResponse.json({
         success: false,
         message: 'Please provide a valid email address'
       }, { status: 400 });
     }
 
+    // Validate message length
+    if (sanitizedMessage.length < INPUT_LIMITS.message.min || sanitizedMessage.length > INPUT_LIMITS.message.max) {
+      return NextResponse.json({
+        success: false,
+        message: `Message must be between ${INPUT_LIMITS.message.min} and ${INPUT_LIMITS.message.max} characters`
+      }, { status: 400 });
+    }
+
     // Get client info
-    const ipAddress = request.headers.get('x-forwarded-for') || 
-                     request.headers.get('x-real-ip') || 
-                     'unknown';
-    const userAgent = request.headers.get('user-agent') || '';
+    const ipAddress = getClientIp(request);
+    const userAgent = getUserAgent(request);
 
     // Save to database
     const contactMessage = new Contact({
-      name,
-      email,
-      message,
+      name: sanitizedName,
+      email: sanitizedEmail,
+      message: sanitizedMessage,
       ipAddress,
       userAgent,
       status: 'unread'

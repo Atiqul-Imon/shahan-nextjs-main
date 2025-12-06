@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, Suspense, useEffect } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { apiClient } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { User, Lock } from 'lucide-react';
@@ -16,9 +16,16 @@ const LoginForm = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState(false);
   const searchParams = useSearchParams();
-  const { login } = useAuth();
+  const router = useRouter();
+  const { login, isLogin, isLoading } = useAuth();
 
-  // Note: Middleware handles redirecting authenticated users away from login page
+  // Redirect if already logged in
+  useEffect(() => {
+    if (!isLoading && isLogin) {
+      const redirect = searchParams.get('redirect') || '/dashboard';
+      router.push(redirect);
+    }
+  }, [isLogin, isLoading, router, searchParams]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
@@ -38,6 +45,7 @@ const LoginForm = () => {
         success?: boolean;
         data?: {
           accessToken: string;
+          refreshToken: string;
           email: string;
           userId: string;
           name?: string;
@@ -47,24 +55,25 @@ const LoginForm = () => {
       };
       
       if (response.success && response.data) {
-        login(response.data.accessToken, {
-          _id: response.data.userId,
-          name: response.data.name || '',
-          email: response.data.email,
-          role: response.data.role || 'user'
-        });
+        login(
+          response.data.accessToken,
+          response.data.refreshToken || '',
+          {
+            _id: response.data.userId,
+            name: response.data.name || '',
+            email: response.data.email,
+            role: response.data.role || 'user'
+          }
+        );
         
         setMessage('Login successful! Redirecting...');
         
         // Get redirect URL or default to dashboard
         const redirect = searchParams.get('redirect') || '/dashboard';
         
-        // The cookie is set by the API response headers
-        // Use a full page reload to ensure cookie is sent with the request
-        // The middleware will verify the cookie and allow access
-        setTimeout(() => {
-          window.location.href = redirect;
-        }, 300);
+        // Token is stored in localStorage via AuthContext
+        // Redirect immediately - client-side protection in dashboard layout will handle auth check
+        window.location.href = redirect;
       } else {
         setError(true);
         setMessage(response.message || 'Login failed');
@@ -76,6 +85,22 @@ const LoginForm = () => {
       setLoading(false);
     }
   };
+
+  // Show loading while checking auth status
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
+        <div className="bg-gray-800 p-8 rounded-lg shadow-xl w-full max-w-md">
+          <div className="text-gray-200 text-center">Loading...</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render form if already logged in (will redirect)
+  if (isLogin) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
@@ -101,6 +126,7 @@ const LoginForm = () => {
                 value={formData.email}
                 onChange={handleChange}
                 required
+                autoComplete="email"
                 className="w-full pl-10 pr-3 py-2 border border-gray-600 rounded-md outline-none bg-gray-700 text-gray-200 focus:border-blue-500"
                 placeholder="your.email@example.com"
               />
@@ -117,6 +143,7 @@ const LoginForm = () => {
                 value={formData.password}
                 onChange={handleChange}
                 required
+                autoComplete="current-password"
                 className="w-full pl-10 pr-3 py-2 border border-gray-600 rounded-md outline-none bg-gray-700 text-gray-200 focus:border-blue-500"
                 placeholder="Your password"
               />

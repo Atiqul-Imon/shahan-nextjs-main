@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import Project from '@/models/Project';
-import { verifyAccessToken } from '@/lib/auth';
 import cloudinary from '@/lib/cloudinary';
+import { isValidObjectId } from '@/lib/validation';
+import { verifyAuth } from '@/lib/security';
 
 interface CloudinaryUploadResult {
   secure_url: string;
@@ -49,15 +50,17 @@ export async function PUT(
     await connectDB();
 
     // Verify authentication
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader) {
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    const auth = verifyAuth(request);
+    if (!auth.valid) {
+      return NextResponse.json({ message: auth.error || 'Unauthorized' }, { status: 401 });
     }
 
-    const token = authHeader.replace('Bearer ', '');
-    const decoded = verifyAccessToken(token);
-    if (!decoded) {
-      return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
+    // Get and validate ID format
+    const { id } = await params;
+    if (!isValidObjectId(id)) {
+      return NextResponse.json({
+        message: 'Invalid project ID format'
+      }, { status: 400 });
     }
 
     const formData = await request.formData();
@@ -69,7 +72,6 @@ export async function PUT(
     const status = formData.get('status') as string;
     const images = formData.getAll('images') as File[];
 
-    const { id } = await params;
     const project = await Project.findById(id);
     if (!project) {
       return NextResponse.json({
@@ -139,18 +141,19 @@ export async function DELETE(
     await connectDB();
 
     // Verify authentication
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader) {
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-    }
-
-    const token = authHeader.replace('Bearer ', '');
-    const decoded = verifyAccessToken(token);
-    if (!decoded) {
-      return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
+    const auth = verifyAuth(request);
+    if (!auth.valid) {
+      return NextResponse.json({ message: auth.error || 'Unauthorized' }, { status: 401 });
     }
 
     const { id } = await params;
+    
+    // Validate ID format
+    if (!isValidObjectId(id)) {
+      return NextResponse.json({
+        message: 'Invalid project ID format'
+      }, { status: 400 });
+    }
     const project = await Project.findById(id);
     if (!project) {
       return NextResponse.json({
