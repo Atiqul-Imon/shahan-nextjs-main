@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import Appointment from '@/models/Appointment';
 import { sendAppointmentEmail, sendAppointmentConfirmationEmail } from '@/lib/email';
-import { isDateAvailable, generateTimeSlots, defaultAvailability } from '@/lib/availability';
+import { isDateAvailable, generateTimeSlots, getAvailabilityConfig } from '@/lib/availability';
 import { checkRateLimit, RATE_LIMITS } from '@/lib/rateLimit';
 
 export async function POST(request: NextRequest) {
@@ -82,8 +82,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Get current availability configuration from database
+    const availabilityConfig = await getAvailabilityConfig();
+
     // Check if date is available
-    if (!isDateAvailable(appointmentDate, defaultAvailability)) {
+    if (!isDateAvailable(appointmentDate, availabilityConfig)) {
       return NextResponse.json(
         { message: 'Selected date is not available for booking' },
         { status: 400 }
@@ -91,7 +94,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if time slot is valid
-    const availableSlots = generateTimeSlots(new Date(date), defaultAvailability);
+    const availableSlots = generateTimeSlots(new Date(date), availabilityConfig);
     if (!availableSlots.includes(time)) {
       return NextResponse.json(
         { message: 'Selected time slot is not available' },
@@ -99,9 +102,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Calculate end time (30 minutes after start)
+    // Calculate end time using configured slot duration
     const endTime = new Date(appointmentDate);
-    endTime.setMinutes(endTime.getMinutes() + defaultAvailability.slotDuration);
+    endTime.setMinutes(endTime.getMinutes() + availabilityConfig.slotDuration);
 
     // Check for overlapping appointments
     const overlapping = await Appointment.findOne({
@@ -132,7 +135,7 @@ export async function POST(request: NextRequest) {
       startTime: { $gte: dayStart, $lte: dayEnd }
     });
 
-    if (dayAppointments >= defaultAvailability.maxAppointmentsPerDay) {
+    if (dayAppointments >= availabilityConfig.maxAppointmentsPerDay) {
       return NextResponse.json(
         { message: 'Maximum appointments reached for this day. Please select another date.' },
         { status: 409 }
@@ -304,6 +307,9 @@ export async function GET(request: NextRequest) {
     dayStart.setHours(0, 0, 0, 0);
     const dayEnd = new Date(dateObj);
     dayEnd.setHours(23, 59, 59, 999);
+
+    // Get current availability configuration
+    const availabilityConfig = await getAvailabilityConfig();
 
     const bookedAppointments = await Appointment.find({
       status: { $in: ['pending', 'confirmed'] },

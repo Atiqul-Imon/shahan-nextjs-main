@@ -312,6 +312,27 @@ class ApiClient {
       method: 'DELETE',
     });
   }
+
+  // Availability endpoints
+  async getAvailability() {
+    return this.request('/availability');
+  }
+
+  async updateAvailability(data: {
+    weeklySchedule: Array<{ day: number; available: boolean; slots: Array<{ start: string; end: string }> }>;
+    blackoutDates?: string[];
+    slotDuration?: number;
+    minLeadTime?: number;
+    maxAdvanceBooking?: number;
+    bufferBetweenSlots?: number;
+    maxAppointmentsPerDay?: number;
+    timezone?: string;
+  }) {
+    return this.request('/availability', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
 }
 
 export const apiClient = new ApiClient(); 

@@ -20,6 +20,7 @@ export interface AvailabilityConfig {
   maxAdvanceBooking: number; // in days (how far in advance can book)
   bufferBetweenSlots: number; // in minutes
   maxAppointmentsPerDay: number;
+  timezone?: string; // Timezone for the availability
 }
 
 // Default availability configuration
@@ -193,5 +194,81 @@ export function getAvailableDates(startDate: Date, endDate: Date, config: Availa
   }
   
   return availableDates;
+}
+
+/**
+ * Fetch availability configuration from database
+ * Falls back to default if database is not available or no config exists
+ */
+export async function getAvailabilityConfig(): Promise<AvailabilityConfig> {
+  try {
+    // Only fetch from database on server side
+    if (typeof window !== 'undefined') {
+      // Client-side: fetch from API
+      const response = await fetch('/api/availability');
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success && result.data) {
+          return {
+            weeklySchedule: result.data.weeklySchedule,
+            blackoutDates: result.data.blackoutDates || [],
+            slotDuration: result.data.slotDuration,
+            minLeadTime: result.data.minLeadTime,
+            maxAdvanceBooking: result.data.maxAdvanceBooking,
+            bufferBetweenSlots: result.data.bufferBetweenSlots,
+            maxAppointmentsPerDay: result.data.maxAppointmentsPerDay,
+            timezone: result.data.timezone || 'America/New_York'
+          };
+        }
+      }
+      // Fallback to default if API fails
+      return defaultAvailability;
+    } else {
+      // Server-side: fetch directly from database
+      const { default: connectDB } = await import('./db');
+      const { default: Availability } = await import('../models/Availability');
+      
+      await connectDB();
+      let availability = await Availability.findOne();
+      
+      if (!availability) {
+        // Create default configuration
+        availability = new Availability({
+          weeklySchedule: [
+            { day: 0, available: false, slots: [] }, // Sunday
+            { day: 1, available: true, slots: [{ start: '09:00', end: '12:00' }, { start: '14:00', end: '17:00' }] }, // Monday
+            { day: 2, available: true, slots: [{ start: '09:00', end: '12:00' }, { start: '14:00', end: '17:00' }] }, // Tuesday
+            { day: 3, available: true, slots: [{ start: '09:00', end: '12:00' }, { start: '14:00', end: '17:00' }] }, // Wednesday
+            { day: 4, available: true, slots: [{ start: '09:00', end: '12:00' }, { start: '14:00', end: '17:00' }] }, // Thursday
+            { day: 5, available: true, slots: [{ start: '09:00', end: '12:00' }] }, // Friday
+            { day: 6, available: false, slots: [] } // Saturday
+          ],
+          blackoutDates: [],
+          slotDuration: 30,
+          minLeadTime: 24,
+          maxAdvanceBooking: 60,
+          bufferBetweenSlots: 15,
+          maxAppointmentsPerDay: 4,
+          timezone: 'America/New_York'
+        });
+        await availability.save();
+      }
+      
+      return {
+        weeklySchedule: availability.weeklySchedule,
+        blackoutDates: availability.blackoutDates || [],
+        slotDuration: availability.slotDuration,
+        minLeadTime: availability.minLeadTime,
+        maxAdvanceBooking: availability.maxAdvanceBooking,
+        bufferBetweenSlots: availability.bufferBetweenSlots,
+        maxAppointmentsPerDay: availability.maxAppointmentsPerDay,
+        timezone: availability.timezone || 'America/New_York'
+      };
+    }
+  } catch (error) {
+    console.error('Error fetching availability config:', error);
+    // Fallback to default on error
+    return defaultAvailability;
+  }
 }
 

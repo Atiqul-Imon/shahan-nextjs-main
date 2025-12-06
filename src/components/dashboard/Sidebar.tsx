@@ -8,6 +8,7 @@ import {
   Code,
   MessageSquare,
   Calendar,
+  Clock,
   Settings,
   LogOut,
 } from 'lucide-react';
@@ -26,6 +27,7 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
     { to: '/dashboard/snippets', icon: Code, label: 'Snippets' },
     { to: '/dashboard/messages', icon: MessageSquare, label: 'Messages' },
     { to: '/dashboard/appointments', icon: Calendar, label: 'Appointments' },
+    { to: '/dashboard/availability', icon: Clock, label: 'Availability' },
   ];
 
   const bottomNavItems = [
