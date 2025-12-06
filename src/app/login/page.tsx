@@ -22,7 +22,8 @@ const LoginForm = () => {
   // Redirect if already logged in
   useEffect(() => {
     if (!isLoading && isLogin) {
-      const redirect = searchParams.get('redirect') || '/dashboard';
+      const redirectParam = searchParams.get('redirect');
+      const redirect = redirectParam ? decodeURIComponent(redirectParam) : '/dashboard';
       router.push(redirect);
     }
   }, [isLogin, isLoading, router, searchParams]);
@@ -55,6 +56,7 @@ const LoginForm = () => {
       };
       
       if (response.success && response.data) {
+        // Update auth state first
         login(
           response.data.accessToken,
           response.data.refreshToken || '',
@@ -69,11 +71,17 @@ const LoginForm = () => {
         setMessage('Login successful! Redirecting...');
         
         // Get redirect URL or default to dashboard
-        const redirect = searchParams.get('redirect') || '/dashboard';
+        const redirectParam = searchParams.get('redirect');
+        const redirect = redirectParam ? decodeURIComponent(redirectParam) : '/dashboard';
         
-        // Token is stored in localStorage via AuthContext
-        // Redirect immediately - client-side protection in dashboard layout will handle auth check
-        window.location.href = redirect;
+        // Ensure redirect starts with / to make it an absolute path
+        const redirectPath = redirect.startsWith('/') ? redirect : `/${redirect}`;
+        
+        // Use window.location for a full page reload to ensure auth state is properly initialized
+        // This is more reliable in production where client-side state might not sync immediately
+        setTimeout(() => {
+          window.location.href = redirectPath;
+        }, 200);
       } else {
         setError(true);
         setMessage(response.message || 'Login failed');
