@@ -7,6 +7,7 @@ import {
   Briefcase,
   Code,
   MessageSquare,
+  Calendar,
   Settings,
   LogOut,
 } from 'lucide-react';
@@ -24,6 +25,7 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
     { to: '/dashboard/projects', icon: Briefcase, label: 'Projects' },
     { to: '/dashboard/snippets', icon: Code, label: 'Snippets' },
     { to: '/dashboard/messages', icon: MessageSquare, label: 'Messages' },
+    { to: '/dashboard/appointments', icon: Calendar, label: 'Appointments' },
   ];
 
   const bottomNavItems = [

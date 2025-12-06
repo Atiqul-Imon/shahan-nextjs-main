@@ -53,7 +53,7 @@ export const sendAppointmentEmail = async (data: {
 
   const mailOptions = {
     from: process.env.EMAIL_USER,
-    to: process.env.EMAIL_USER, // Send to Shahan
+    to: 'shahan24h@gmail.com', // Send to Shahan's email
     subject: `New Appointment Request: ${data.topic}`,
     html: `
       <h2>New Appointment Request</h2>

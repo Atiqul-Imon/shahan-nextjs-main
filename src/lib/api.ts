@@ -284,6 +284,34 @@ class ApiClient {
       method: 'DELETE',
     });
   }
+
+  // Appointment endpoints
+  async getAppointments(params?: { status?: string; page?: number; limit?: number }) {
+    const searchParams = new URLSearchParams();
+    searchParams.append('admin', 'true');
+    if (params?.status) searchParams.append('status', params.status);
+    if (params?.page) searchParams.append('page', params.page.toString());
+    if (params?.limit) searchParams.append('limit', params.limit.toString());
+    
+    return this.request(`/appointments?${searchParams}`);
+  }
+
+  async getAppointment(id: string) {
+    return this.request(`/appointments/${id}`);
+  }
+
+  async updateAppointment(id: string, data: { status?: string; adminNotes?: string }) {
+    return this.request(`/appointments/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteAppointment(id: string) {
+    return this.request(`/appointments/${id}`, {
+      method: 'DELETE',
+    });
+  }
 }
 
 export const apiClient = new ApiClient(); 

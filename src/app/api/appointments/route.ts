@@ -208,7 +208,89 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const date = searchParams.get('date');
+    const admin = searchParams.get('admin') === 'true';
 
+    // Admin route - return all appointments with filters
+    if (admin) {
+      // Verify authentication
+      const token = request.headers.get('authorization')?.replace('Bearer ', '');
+      
+      if (!token) {
+        return NextResponse.json(
+          { message: 'Unauthorized' },
+          { status: 401 }
+        );
+      }
+
+      const { verifyAccessToken } = await import('@/lib/auth');
+      const decoded = verifyAccessToken(token);
+      if (!decoded) {
+        return NextResponse.json(
+          { message: 'Invalid token' },
+          { status: 401 }
+        );
+      }
+
+      // Get filter parameters
+      const status = searchParams.get('status');
+      const page = parseInt(searchParams.get('page') || '1');
+      const limit = parseInt(searchParams.get('limit') || '50');
+      const skip = (page - 1) * limit;
+
+      // Build query
+      const query: { status?: string } = {};
+      if (status) {
+        query.status = status;
+      }
+
+      // Get appointments with pagination
+      const appointments = await Appointment.find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean();
+
+      // Get total count
+      const total = await Appointment.countDocuments(query);
+
+      // Get status counts
+      const statusCounts = await Appointment.aggregate([
+        {
+          $group: {
+            _id: '$status',
+            count: { $sum: 1 }
+          }
+        }
+      ]);
+
+      const counts: Record<string, number> = {
+        pending: 0,
+        confirmed: 0,
+        rejected: 0,
+        cancelled: 0,
+        total: total
+      };
+
+      statusCounts.forEach((item: { _id: string; count: number }) => {
+        counts[item._id] = item.count;
+      });
+
+      return NextResponse.json({
+        success: true,
+        data: {
+          appointments,
+          pagination: {
+            page,
+            limit,
+            total,
+            pages: Math.ceil(total / limit)
+          },
+          counts
+        }
+      });
+    }
+
+    // Public route - return booked slots for a specific date
     if (!date) {
       return NextResponse.json(
         { message: 'Date parameter is required' },
@@ -236,9 +318,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ bookedSlots }, { status: 200 });
 
   } catch (error) {
-    console.error('Error fetching booked slots:', error);
+    console.error('Error fetching appointments:', error);
     return NextResponse.json(
-      { message: 'Failed to fetch availability' },
+      { message: 'Failed to fetch appointments' },
       { status: 500 }
     );
   }
