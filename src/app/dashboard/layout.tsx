@@ -14,16 +14,55 @@ export default function DashboardLayout({
   const { isLogin, isLoading } = useAuth();
   const router = useRouter();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
+  // Check localStorage directly as fallback while AuthContext initializes
   useEffect(() => {
-    if (!isLoading && !isLogin) {
-      // Store current path for redirect after login
-      const currentPath = window.location.pathname;
-      router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
+    if (typeof window !== 'undefined') {
+      const checkLocalStorage = () => {
+        const accessToken = localStorage.getItem('accessToken');
+        const userData = localStorage.getItem('user');
+        return !!(accessToken && userData);
+      };
+
+      // Give AuthContext a moment to initialize, then check localStorage
+      const timer = setTimeout(() => {
+        setIsCheckingAuth(false);
+        
+        // If AuthContext says not logged in, double-check localStorage
+        if (!isLoading && !isLogin) {
+          const hasAuth = checkLocalStorage();
+          if (!hasAuth) {
+            // Store current path for redirect after login
+            const currentPath = window.location.pathname;
+            router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
+          }
+        }
+      }, 100);
+
+      return () => clearTimeout(timer);
     }
   }, [isLogin, isLoading, router]);
 
-  if (isLoading) {
+  // Also check when AuthContext finishes loading
+  useEffect(() => {
+    if (!isLoading && !isLogin) {
+      // Double-check localStorage before redirecting
+      if (typeof window !== 'undefined') {
+        const accessToken = localStorage.getItem('accessToken');
+        const userData = localStorage.getItem('user');
+        
+        if (!accessToken || !userData) {
+          // Store current path for redirect after login
+          const currentPath = window.location.pathname;
+          router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
+        }
+      }
+    }
+  }, [isLogin, isLoading, router]);
+
+  // Show loading while checking auth or while AuthContext is initializing
+  if (isLoading || isCheckingAuth) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-gray-200">Loading...</div>
@@ -31,7 +70,21 @@ export default function DashboardLayout({
     );
   }
 
+  // Check localStorage as fallback before redirecting
   if (!isLogin) {
+    if (typeof window !== 'undefined') {
+      const accessToken = localStorage.getItem('accessToken');
+      const userData = localStorage.getItem('user');
+      
+      // If we have tokens in localStorage, wait a bit more for AuthContext to catch up
+      if (accessToken && userData) {
+        return (
+          <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+            <div className="text-gray-200">Loading...</div>
+          </div>
+        );
+      }
+    }
     return null; // Will redirect to login
   }
 

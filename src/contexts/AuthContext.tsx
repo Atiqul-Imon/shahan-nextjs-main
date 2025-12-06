@@ -1,7 +1,6 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react';
-import { verifyAccessToken } from '@/lib/auth';
 
 interface User {
   _id: string;
@@ -22,30 +21,59 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Check if token is expired or will expire soon (within 2 minutes)
-function isTokenExpiredOrExpiringSoon(token: string): boolean {
-  try {
-    const decoded = verifyAccessToken(token);
-    if (!decoded) return true;
-    
-    // Token is valid, but we can't check expiration from client side easily
-    // So we'll rely on API responses to tell us when token is expired
-    return false;
-  } catch {
-    return true;
-  }
+// Check if token exists and has basic structure (client-side only check)
+// We can't verify JWT tokens in the browser without exposing the secret
+// So we just check if the token exists and has the right format
+// Actual validation will happen on the server side via API calls
+function isTokenValidFormat(token: string): boolean {
+  if (!token || typeof token !== 'string') return false;
+  
+  // Basic JWT format check (3 parts separated by dots)
+  const parts = token.split('.');
+  if (parts.length !== 3) return false;
+  
+  // Token exists and has correct format
+  // Actual expiration will be checked by the server
+  return true;
 }
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [isLogin, setIsLogin] = useState(false);
+  // Initialize state from localStorage immediately if available (client-side only)
+  const getInitialAuthState = () => {
+    if (typeof window === 'undefined') {
+      return { isLogin: false, user: null };
+    }
+    
+    const accessToken = localStorage.getItem('accessToken');
+    const userData = localStorage.getItem('user');
+    
+    if (accessToken && userData) {
+      try {
+        const parsedUser = JSON.parse(userData);
+        // Don't verify token expiration here - just check if it exists
+        // Token validation will happen on API calls
+        return { isLogin: true, user: parsedUser };
+      } catch {
+        return { isLogin: false, user: null };
+      }
+    }
+    
+    return { isLogin: false, user: null };
+  };
+
+  const initialState = getInitialAuthState();
+  const [isLogin, setIsLogin] = useState(initialState.isLogin);
   const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(initialState.user);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Check token validity on mount and periodically
   useEffect(() => {
     // Only run on client side
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') {
+      setIsLoading(false);
+      return;
+    }
 
     const checkAuth = () => {
       const accessToken = localStorage.getItem('accessToken');
@@ -55,24 +83,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         try {
           const parsedUser = JSON.parse(userData);
           
-          // Verify token is still valid
-          if (isTokenExpiredOrExpiringSoon(accessToken)) {
-            // Token expired, try to refresh
-            const refreshToken = localStorage.getItem('refreshToken');
-            if (refreshToken) {
-              // Will be handled by API client on next request
-              setIsLogin(false);
-              setUser(null);
-            } else {
-              // No refresh token, clear auth
-              localStorage.removeItem('accessToken');
-              localStorage.removeItem('user');
-              setIsLogin(false);
-              setUser(null);
-            }
-          } else {
+          // Check if token has valid format (client-side only)
+          // Actual token validation happens on server via API calls
+          if (isTokenValidFormat(accessToken)) {
             setIsLogin(true);
             setUser(parsedUser);
+          } else {
+            // Invalid token format, clear auth
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('user');
+            setIsLogin(false);
+            setUser(null);
           }
         } catch (error) {
           console.error('Error parsing user data:', error);
@@ -88,6 +110,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     };
 
+    // Check immediately and set loading to false
     checkAuth();
     setIsLoading(false);
 
