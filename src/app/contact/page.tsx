@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { apiClient } from '@/lib/api';
-import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import { Mail, MapPin, Send } from 'lucide-react';
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -46,12 +46,6 @@ const ContactPage = () => {
       title: 'Email',
       value: 'shahan24h@gmail.com',
       link: 'mailto:shahan24h@gmail.com'
-    },
-    {
-      icon: Phone,
-      title: 'Phone',
-      value: '347 908 3925',
-      link: 'tel:13479083925'
     },
     {
       icon: MapPin,
