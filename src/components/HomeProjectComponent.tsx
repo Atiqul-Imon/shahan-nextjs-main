@@ -42,7 +42,7 @@ const QSR_ANALYSIS_PROJECT: Project = {
 const MUNICIPAL_COURT_ANALYSIS_PROJECT: Project = {
   _id: 'municipal-court-case-analysis-austin',
   title: 'Municipal Court Case Analysis – Austin, TX',
-  description: 'Data-backed municipal court assessment covering 19,906 October 2025 cases in Austin. Delivers operational triage, equity monitoring, fiscal impact sizing ($263K savings), and prioritized policy interventions with full supporting materials.',
+  description: 'Data-backed municipal court assessment covering 19,906 cases in Austin. Delivers operational triage, equity monitoring, fiscal impact sizing ($263K savings), and prioritized policy interventions with full supporting materials.',
   technologies: ['Python', 'Pandas', 'Seaborn', 'Statistical Modeling', 'Policy Analysis', 'Next.js', 'Tailwind CSS'],
   images: [],
   liveUrl: '/project/municipal-court-case-analysis-austin',

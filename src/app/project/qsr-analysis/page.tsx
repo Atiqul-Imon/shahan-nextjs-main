@@ -549,24 +549,24 @@ const QSRAnalysisProject = () => {
             <section className="bg-white p-8 rounded-2xl shadow-lg">
               <h3 className="text-2xl font-bold text-gray-900 mb-6">Model Performance Comparison</h3>
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full min-w-[720px] table-auto">
                   <thead>
                     <tr className="border-b-2 border-gray-200">
-                      <th className="text-left py-3 px-4 font-bold text-gray-700">Model</th>
-                      <th className="text-left py-3 px-4 font-bold text-gray-700">Accuracy Metric</th>
-                      <th className="text-left py-3 px-4 font-bold text-gray-700">Training Samples</th>
-                      <th className="text-left py-3 px-4 font-bold text-gray-700">Status</th>
+                      <th className="text-left py-3 px-4 font-bold text-gray-800 whitespace-nowrap">Model</th>
+                      <th className="text-left py-3 px-4 font-bold text-gray-800 whitespace-nowrap">Accuracy Metric</th>
+                      <th className="text-left py-3 px-4 font-bold text-gray-800 whitespace-nowrap">Training Samples</th>
+                      <th className="text-left py-3 px-4 font-bold text-gray-800 whitespace-nowrap">Status</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr className="border-b border-gray-100">
-                      <td className="py-4 px-4 font-semibold">Combo Upselling Classifier</td>
+                      <td className="py-4 px-4 font-semibold text-gray-900 whitespace-nowrap">Combo Upselling Classifier</td>
                       <td className="py-4 px-4">
                         <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-bold">
                           100% Accuracy
                         </span>
                       </td>
-                      <td className="py-4 px-4">1,307 samples</td>
+                      <td className="py-4 px-4 text-gray-900 whitespace-nowrap">1,307 samples</td>
                       <td className="py-4 px-4">
                         <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">
                           PRODUCTION
@@ -574,13 +574,13 @@ const QSRAnalysisProject = () => {
                       </td>
                     </tr>
                     <tr className="border-b border-gray-100">
-                      <td className="py-4 px-4 font-semibold">Order Value Predictor</td>
+                      <td className="py-4 px-4 font-semibold text-gray-900 whitespace-nowrap">Order Value Predictor</td>
                       <td className="py-4 px-4">
                         <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-bold">
                           R² = 0.974
                         </span>
                       </td>
-                      <td className="py-4 px-4">1,386 samples</td>
+                      <td className="py-4 px-4 text-gray-900 whitespace-nowrap">1,386 samples</td>
                       <td className="py-4 px-4">
                         <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">
                           PRODUCTION
@@ -711,21 +711,6 @@ const QSRAnalysisProject = () => {
               </div>
             </div>
 
-            {/* Download Section */}
-            <div className="bg-white p-8 rounded-2xl shadow-lg border-2 border-blue-200">
-              <div className="flex flex-col md:flex-row items-center justify-between">
-                <div className="mb-4 md:mb-0">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Download Full Documentation</h3>
-                  <p className="text-gray-600">
-                    Get the complete analysis report, code, and models
-                  </p>
-                </div>
-                <button className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-bold flex items-center">
-                  <Download className="w-5 h-5 mr-2" />
-                  Download Package
-                </button>
-              </div>
-            </div>
           </div>
         )}
       </div>

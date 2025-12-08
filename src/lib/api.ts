@@ -260,31 +260,6 @@ class ApiClient {
     return response.json();
   }
 
-  // Snippet endpoints
-  async getSnippets() {
-    return this.request('/snippet');
-  }
-
-  async createSnippet(data: { title: string; content: string; language: string }) {
-    return this.request('/snippet', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-  }
-
-  async updateSnippet(id: string, data: { title: string; content: string; language: string }) {
-    return this.request(`/snippet/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
-  }
-
-  async deleteSnippet(id: string) {
-    return this.request(`/snippet/${id}`, {
-      method: 'DELETE',
-    });
-  }
-
   // Appointment endpoints
   async getAppointments(params?: { status?: string; page?: number; limit?: number }) {
     const searchParams = new URLSearchParams();

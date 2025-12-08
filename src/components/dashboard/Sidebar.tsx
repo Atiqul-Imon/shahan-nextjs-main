@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
   Briefcase,
-  Code,
   MessageSquare,
   Calendar,
   Clock,
@@ -24,7 +23,6 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
   const navItems = [
     { to: '/dashboard', icon: LayoutDashboard, label: 'Overview' },
     { to: '/dashboard/projects', icon: Briefcase, label: 'Projects' },
-    { to: '/dashboard/snippets', icon: Code, label: 'Snippets' },
     { to: '/dashboard/messages', icon: MessageSquare, label: 'Messages' },
     { to: '/dashboard/appointments', icon: Calendar, label: 'Appointments' },
     { to: '/dashboard/availability', icon: Clock, label: 'Availability' },

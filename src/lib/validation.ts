@@ -11,8 +11,6 @@ export const INPUT_LIMITS = {
   description: { max: 10000 },
   message: { min: 1, max: 5000 },
   url: { max: 2048 },
-  snippetTitle: { min: 1, max: 200 },
-  snippetContent: { max: 50000 },
   technologies: { max: 50 }, // Max number of technologies
   adminNotes: { max: 2000 },
 };

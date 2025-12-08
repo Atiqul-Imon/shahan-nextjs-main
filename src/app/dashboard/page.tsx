@@ -3,11 +3,10 @@
 import { useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { Briefcase, Code, Users, MessageSquare } from 'lucide-react';
+import { Briefcase, Users, MessageSquare } from 'lucide-react';
 
 interface DashboardStats {
   projects: number;
-  snippets: number;
   messages: number;
 }
 
@@ -36,25 +35,22 @@ const StatCard = ({ icon, label, value, color }: StatCardProps) => {
 };
 
 const DashboardPage = () => {
-  const [stats, setStats] = useState<DashboardStats>({ projects: 0, snippets: 0, messages: 0 });
+  const [stats, setStats] = useState<DashboardStats>({ projects: 0, messages: 0 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchAllData = async () => {
       try {
-        const [projectData, snippetData, messagesData] = await Promise.all([
+        const [projectData, messagesData] = await Promise.all([
           apiClient.getProjects(),
-          apiClient.getSnippets(),
           apiClient.getContactMessages(),
         ]);
 
         const projects = projectData as { data?: unknown[] };
-        const snippets = snippetData as unknown[];
         const messages = messagesData as { data?: { counts?: { total?: number } } };
 
         setStats({
           projects: projects.data?.length || 0,
-          snippets: snippets?.length || 0,
           messages: messages.data?.counts?.total || 0,
         });
       } catch (err) {
@@ -68,11 +64,10 @@ const DashboardPage = () => {
 
   const chartData = [
     { name: 'Projects', count: stats.projects, fill: '#16a34a' },
-    { name: 'Snippets', count: stats.snippets, fill: '#f97316' },
     { name: 'Messages', count: stats.messages, fill: '#3b82f6' },
   ];
 
-  const pieChartColors = ['#16a34a', '#f97316', '#3b82f6'];
+  const pieChartColors = ['#16a34a', '#3b82f6'];
 
   if (loading) {
     return (
@@ -100,7 +95,6 @@ const DashboardPage = () => {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard icon={Briefcase} label="Total Projects" value={stats.projects} color="from-green-500 to-green-400" />
-        <StatCard icon={Code} label="Total Snippets" value={stats.snippets} color="from-orange-500 to-orange-400" />
         <StatCard icon={MessageSquare} label="Total Messages" value={stats.messages} color="from-blue-500 to-blue-400" />
         <StatCard icon={Users} label="Total Users" value={1} color="from-purple-500 to-purple-400" />
       </div>

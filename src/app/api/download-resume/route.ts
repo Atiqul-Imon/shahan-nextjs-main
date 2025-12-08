@@ -2,10 +2,12 @@ import { NextResponse } from 'next/server';
 import { promises as fs } from 'fs';
 import path from 'path';
 
+const RESUME_FILE_NAME = 'shahan_data_scientist_resume.pdf';
+
 export async function GET() {
   try {
     // Get the file path
-    const filePath = path.join(process.cwd(), 'public', 'resume', 'Shahan_Ahmed_Resume.pdf');
+    const filePath = path.join(process.cwd(), 'public', 'resume', RESUME_FILE_NAME);
     
     // Check if file exists
     try {
@@ -25,7 +27,7 @@ export async function GET() {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': 'attachment; filename="Shahan_Ahmed_Resume.pdf"',
+        'Content-Disposition': `attachment; filename="${RESUME_FILE_NAME}"`,
         'Content-Length': fileBuffer.length.toString(),
       },
     });

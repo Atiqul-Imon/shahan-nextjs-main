@@ -270,16 +270,6 @@ const ModelComparisonDashboard = () => {
                 {view.charAt(0).toUpperCase() + view.slice(1)}
               </button>
             ))}
-            <button
-              onClick={() => setShowRecommendations(!showRecommendations)}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ml-auto ${
-                showRecommendations
-                  ? 'bg-green-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              {showRecommendations ? 'Hide Recommendations' : 'Show Recommendations'}
-            </button>
           </div>
         </div>
 
@@ -591,6 +581,19 @@ const ModelComparisonDashboard = () => {
             </div>
           </div>
         )}
+
+        <div className="mt-8 flex justify-center">
+          <button
+            onClick={() => setShowRecommendations(!showRecommendations)}
+            className={`px-6 py-3 rounded-lg font-semibold shadow transition-colors ${
+              showRecommendations
+                ? 'bg-green-600 text-white hover:bg-green-700'
+                : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+            }`}
+          >
+            {showRecommendations ? 'Hide Recommendations' : 'Show Recommendations'}
+          </button>
+        </div>
 
         {showRecommendations && (
           <div className="bg-white rounded-lg shadow-lg p-6 mt-6">
