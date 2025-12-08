@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { apiClient } from '@/lib/api';
-import { Code, Calendar, ArrowRight, ExternalLink } from 'lucide-react';
+import { Code, ArrowRight, ExternalLink } from 'lucide-react';
 import { PortfolioSchema } from '@/components/StructuredData';
 
 interface Project {
@@ -129,14 +129,6 @@ const ProjectPage = () => {
     fetchDbProjects();
   }, []);
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
-
   const getProjectUrl = (projectId: string) => {
     if (projectId === 'ml-dashboard') return '/project/ml-dashboard';
     if (projectId === 'qsr-analysis') return '/project/qsr-analysis';
@@ -223,31 +215,6 @@ const ProjectPage = () => {
                     </h3>
                   </Link>
                   
-                  {/* Enhanced Technology Tags */}
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {project.technologies?.slice(0, 4).map((tech, index) => (
-                      <span
-                        key={index}
-                        className="inline-flex items-center px-3 py-1 text-xs font-medium bg-blue-500/10 text-blue-400 rounded-full border border-blue-500/20 hover:bg-blue-500/20 hover:scale-105 transition-all duration-200 cursor-default"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                    {project.technologies?.length > 4 && (
-                      <span className="inline-flex items-center px-3 py-1 text-xs font-medium bg-gray-700 text-gray-300 rounded-full border border-gray-600 hover:bg-gray-600 transition-colors duration-200 cursor-default">
-                        +{project.technologies.length - 4} more
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Enhanced Date */}
-                  <div className="flex items-center text-sm text-gray-400 mb-4">
-                    <div className="flex items-center bg-gray-700/50 rounded-full px-3 py-1">
-                      <Calendar size={14} className="mr-2 text-blue-400" />
-                      <span className="text-xs">{formatDate(project.createdAt)}</span>
-                    </div>
-                  </div>
-
                   {/* Description */}
                   <p className="text-gray-300 text-sm leading-relaxed mb-6 line-clamp-3">
                     {project.description}
