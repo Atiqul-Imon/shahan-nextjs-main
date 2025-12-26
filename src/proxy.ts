@@ -5,7 +5,7 @@ import { getRateLimitKey, checkRateLimit, RATE_LIMITS } from './lib/rateLimit';
 
 const isDev = process.env.NODE_ENV !== 'production';
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   let response: NextResponse | null = null;
 
   // Rate limiting for API routes
@@ -102,4 +102,5 @@ export const config = {
   matcher: [
     '/api/:path*',
   ],
-}; 
+};
+
