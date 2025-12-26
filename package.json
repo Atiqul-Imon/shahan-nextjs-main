@@ -27,7 +27,7 @@
     "lucide-react": "^0.536.0",
     "mongoose": "^8.17.0",
     "multer": "^2.0.2",
-    "next": "15.4.8",
+    "next": "15.4.10",
     "nodemailer": "^7.0.5",
     "react": "19.1.2",
     "react-dom": "19.1.2",
