@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { BookOpen } from 'lucide-react';
+import Image from 'next/image';
 
 const publications = [
   {
@@ -34,7 +35,7 @@ const workingProjects = [
   {
     title: "OpenDataBD",
     description: "Open data initiative for Bangladesh",
-    link: "https://opendatabd.org",
+    link: "https://www.opendatabd.com",
   },
 ];
 
@@ -88,11 +89,20 @@ const ResearchSection = () => {
             {presentations.map((pres, index) => (
               <div
                 key={index}
-                className="flex items-start justify-between p-4 rounded-xl bg-gray-800 border border-gray-700 hover:border-gray-600 transition-colors duration-200"
+                className="flex items-center justify-between p-4 rounded-xl bg-gray-800 border border-gray-700 hover:border-gray-600 transition-colors duration-200"
               >
-                <div>
-                  <p className="text-gray-100 font-medium">{pres.title}</p>
-                  <p className="text-gray-400 text-sm">{pres.event}</p>
+                <div className="flex items-center gap-4">
+                  <Image
+                    src="/logo/msu_logo.png"
+                    alt="Montclair State University"
+                    width={36}
+                    height={44}
+                    className="object-contain flex-shrink-0"
+                  />
+                  <div>
+                    <p className="text-gray-100 font-medium">{pres.title}</p>
+                    <p className="text-gray-400 text-sm">{pres.event}</p>
+                  </div>
                 </div>
                 <span className="ml-4 px-3 py-1 rounded-lg bg-gray-700 text-gray-400 text-xs font-semibold flex-shrink-0">
                   {pres.year}

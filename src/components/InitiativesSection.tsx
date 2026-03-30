@@ -1,15 +1,15 @@
 import Link from 'next/link';
-import { FaYoutube, FaGlobe, FaCode } from 'react-icons/fa';
+import Image from 'next/image';
+import { FaGlobe, FaCode } from 'react-icons/fa';
 
 const initiatives = [
   {
-    icon: FaYoutube,
+    logoImg: "/logo/shahan-stack.png",
     title: "The Shahan Stack",
     description: "YouTube channel for practical data science & ML engineering walkthroughs.",
-    iconColor: "text-red-400",
-    bgColor: "bg-red-500/10",
-    borderColor: "border-red-500/20",
-    link: "#",
+    bgColor: "bg-indigo-500/10",
+    borderColor: "border-indigo-500/20",
+    link: "https://www.youtube.com/@theshahanstack",
   },
   {
     icon: FaGlobe,
@@ -18,7 +18,7 @@ const initiatives = [
     iconColor: "text-purple-400",
     bgColor: "bg-purple-500/10",
     borderColor: "border-purple-500/20",
-    link: "https://opendatabd.org",
+    link: "https://www.opendatabd.com",
   },
   {
     icon: FaCode,
@@ -27,7 +27,7 @@ const initiatives = [
     iconColor: "text-blue-400",
     bgColor: "bg-blue-500/10",
     borderColor: "border-blue-500/20",
-    link: "#",
+    link: "https://www.pixelforgebd.com",
   },
 ];
 
@@ -45,24 +45,36 @@ const InitiativesSection = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
           {initiatives.map((initiative, index) => {
-            const Icon = initiative.icon;
+            const Icon = 'icon' in initiative ? initiative.icon : null;
             return (
               <Link
                 key={index}
                 href={initiative.link}
-                target={initiative.link.startsWith('http') ? '_blank' : undefined}
-                rel={initiative.link.startsWith('http') ? 'noopener noreferrer' : undefined}
+                target="_blank"
+                rel="noopener noreferrer"
                 className={`group p-6 rounded-2xl border transition-all duration-300 hover:scale-105 hover:shadow-lg ${initiative.bgColor} ${initiative.borderColor} flex flex-col`}
               >
-                <div className="p-3 rounded-xl bg-gray-900/50 border border-gray-700 w-fit mb-4">
-                  <Icon className={`text-2xl ${initiative.iconColor}`} />
+                <div className="mb-4">
+                  {'logoImg' in initiative ? (
+                    <Image
+                      src={initiative.logoImg}
+                      alt={initiative.title}
+                      width={80}
+                      height={48}
+                      className="object-contain h-12 w-auto"
+                    />
+                  ) : (
+                    <div className="p-3 rounded-xl bg-gray-900/50 border border-gray-700 w-fit">
+                      {Icon && <Icon className={`text-2xl ${'iconColor' in initiative ? initiative.iconColor : ''}`} />}
+                    </div>
+                  )}
                 </div>
                 <h3 className="text-lg font-semibold text-gray-100 mb-2 group-hover:text-blue-200 transition-colors duration-200">
                   {initiative.title}
                 </h3>
                 <p className="text-gray-400 text-sm leading-relaxed flex-grow">{initiative.description}</p>
                 <span className="mt-4 text-xs font-semibold uppercase tracking-widest text-gray-500 group-hover:text-blue-400 transition-colors duration-200">
-                  Learn more →
+                  Visit →
                 </span>
               </Link>
             );

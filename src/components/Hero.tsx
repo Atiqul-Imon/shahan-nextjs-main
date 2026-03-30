@@ -88,7 +88,7 @@ const Hero = () => {
   ];
 
   return (
-    <section className="relative overflow-hidden py-24">
+    <section className="relative overflow-hidden py-12">
       {/* Background Elements */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl animate-float"></div>
@@ -100,24 +100,35 @@ const Hero = () => {
         {/* Main Content */}
         <div className="text-center">
           {/* Header Section */}
-          <div className="mb-12 animate-fade-in max-w-4xl mx-auto">
-            <span className="eyebrow mb-4 block">Data Scientist & ML Engineer</span>
+          <div className="mb-8 animate-fade-in max-w-4xl mx-auto">
+            <span className="eyebrow mb-3 block">Data Scientist & ML Engineer</span>
 
-            <h1 className="text-5xl md:text-7xl font-extrabold mb-6 text-gradient">
+            <h1 className="text-5xl md:text-6xl font-extrabold mb-4 text-gradient">
               Shahan Ahmed
             </h1>
 
-            <p className="text-lg md:text-xl text-gray-400 mb-5 leading-relaxed max-w-2xl mx-auto">
+            <p className="text-base md:text-lg text-gray-400 mb-4 leading-relaxed max-w-2xl mx-auto">
               Specializing in NLP, document intelligence, and healthcare analytics — with published research and production systems processing millions of records.
             </p>
 
-            <p className="text-sm text-gray-500 mb-8 leading-relaxed">
-              <span className="text-blue-400 font-medium not-italic">Currently:</span>{' '}
-              Building production NLP systems at Conduent &nbsp;·&nbsp; Researching federated learning for public health &nbsp;·&nbsp; Creating ML tutorials on YouTube
-            </p>
+            <div className="flex flex-wrap justify-center gap-2 mb-6">
+              {/* Conduent pill with logo */}
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gray-800 border border-gray-700 text-xs text-gray-400">
+                <Image src="/logo/conduent-logo.png" alt="Conduent" width={14} height={14} className="object-contain" />
+                Building NLP systems @ Conduent
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800 border border-gray-700 text-xs text-gray-400">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 flex-shrink-0" />
+                Federated learning research
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800 border border-gray-700 text-xs text-gray-400">
+                <span className="w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0" />
+                ML tutorials on YouTube
+              </span>
+            </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
               <button
                 onClick={downloadResume}
                 className="group flex items-center space-x-3 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 font-semibold transition-all duration-300 shadow-soft hover:shadow-medium transform hover:scale-105 rounded-lg"
@@ -131,41 +142,38 @@ const Hero = () => {
 
           {/* What I Do — 3 Pillars */}
           <div className="animate-slide-up w-full">
-            <span className="eyebrow mb-3 block">Capabilities</span>
-            <h2 className="text-3xl font-bold mb-10 text-gray-100">
+            <span className="eyebrow mb-2 block">Capabilities</span>
+            <h2 className="text-2xl font-bold mb-6 text-gray-100">
               What I Do
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto px-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-5xl mx-auto px-4">
               {pillars.map((pillar, index) => {
                 const Icon = pillar.icon;
                 return (
                   <Link
                     key={index}
                     href={pillar.link}
-                    className={`group p-6 lg:p-8 rounded-2xl border transition-all duration-300 hover:scale-105 hover:shadow-large ${pillar.bgColor} ${pillar.borderColor} backdrop-blur-sm flex flex-col text-left cursor-pointer`}
+                    className={`group p-4 rounded-xl border transition-all duration-300 hover:scale-105 hover:shadow-large ${pillar.bgColor} ${pillar.borderColor} backdrop-blur-sm flex flex-col text-left cursor-pointer`}
                     style={{ animationDelay: `${index * 0.1}s` }}
                   >
-                    <div className="flex items-center mb-4">
-                      <div className="p-3 lg:p-4 rounded-xl bg-gray-900/50 border border-gray-700">
-                        <Icon className={`text-2xl lg:text-3xl ${pillar.color}`} />
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="p-2 rounded-lg bg-gray-900/50 border border-gray-700">
+                        <Icon className={`text-lg ${pillar.color}`} />
                       </div>
+                      <h3 className="text-sm font-semibold text-gray-100 group-hover:text-blue-200 transition-colors duration-200">
+                        {pillar.title}
+                      </h3>
                     </div>
-                    <h3 className="text-lg lg:text-xl font-semibold text-gray-100 mb-3 group-hover:text-blue-200 transition-colors duration-200">
-                      {pillar.title}
-                    </h3>
-                    <p className="text-gray-400 leading-relaxed text-sm lg:text-base mb-4">
-                      {pillar.description}
-                    </p>
-                    <ul className="space-y-2 flex-grow">
+                    <ul className="space-y-1.5 flex-grow">
                       {pillar.bullets.map((bullet, bIdx) => (
-                        <li key={bIdx} className="flex items-start space-x-2 text-sm text-gray-400">
-                          <span className={`mt-1 w-1.5 h-1.5 rounded-full flex-shrink-0 ${pillar.color.replace('text-', 'bg-')}`}></span>
+                        <li key={bIdx} className="flex items-start space-x-2 text-xs text-gray-400">
+                          <span className={`mt-1 w-1 h-1 rounded-full flex-shrink-0 ${pillar.color.replace('text-', 'bg-')}`}></span>
                           <span>{bullet}</span>
                         </li>
                       ))}
                     </ul>
-                    <span className="mt-6 text-xs font-semibold uppercase tracking-widest text-gray-500 group-hover:text-blue-400 transition-colors duration-200">
+                    <span className="mt-3 text-xs font-semibold text-gray-500 group-hover:text-blue-400 transition-colors duration-200">
                       See case studies →
                     </span>
                   </Link>
@@ -175,8 +183,8 @@ const Hero = () => {
           </div>
 
           {/* Social Links */}
-          <div className="mt-16 animate-fade-in max-w-4xl mx-auto" style={{ animationDelay: '0.5s' }}>
-            <h3 className="text-2xl font-semibold text-gray-100 mb-8">
+          <div className="mt-8 animate-fade-in max-w-4xl mx-auto" style={{ animationDelay: '0.5s' }}>
+            <h3 className="text-lg font-semibold text-gray-100 mb-4">
               Connect with Me
             </h3>
 
