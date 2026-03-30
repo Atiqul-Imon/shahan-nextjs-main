@@ -37,8 +37,9 @@ const CaseStudiesSection = () => {
     <section className="py-20 bg-gray-900">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
+          <span className="eyebrow mb-3 block">Featured Work</span>
           <h2 className="text-4xl font-bold text-gray-100 mb-4">Case Studies</h2>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+          <p className="text-gray-400 max-w-2xl mx-auto">
             Real-world ML systems built end-to-end — from problem framing to production deployment.
           </p>
         </div>

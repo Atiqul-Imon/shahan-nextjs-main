@@ -101,16 +101,19 @@ const Hero = () => {
         <div className="text-center">
           {/* Header Section */}
           <div className="mb-12 animate-fade-in max-w-4xl mx-auto">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-gray-100">
+            <span className="eyebrow mb-4 block">Data Scientist & ML Engineer</span>
+
+            <h1 className="text-5xl md:text-7xl font-extrabold mb-6 text-gradient">
               Shahan Ahmed
             </h1>
 
-            <p className="text-xl md:text-2xl text-gray-400 mb-4 leading-relaxed">
-              Data Scientist &amp; ML Engineer specializing in NLP, document intelligence, and healthcare analytics — with published research and production systems processing millions of records.
+            <p className="text-lg md:text-xl text-gray-400 mb-5 leading-relaxed max-w-2xl mx-auto">
+              Specializing in NLP, document intelligence, and healthcare analytics — with published research and production systems processing millions of records.
             </p>
 
-            <p className="text-sm md:text-base text-gray-500 mb-8 leading-relaxed italic">
-              Currently: Building production NLP systems at Conduent | Researching federated learning for public health | Creating ML tutorials on YouTube
+            <p className="text-sm text-gray-500 mb-8 leading-relaxed">
+              <span className="text-blue-400 font-medium not-italic">Currently:</span>{' '}
+              Building production NLP systems at Conduent &nbsp;·&nbsp; Researching federated learning for public health &nbsp;·&nbsp; Creating ML tutorials on YouTube
             </p>
 
             {/* CTA Buttons */}
@@ -128,7 +131,8 @@ const Hero = () => {
 
           {/* What I Do — 3 Pillars */}
           <div className="animate-slide-up w-full">
-            <h2 className="text-3xl font-bold mb-12 text-gray-100">
+            <span className="eyebrow mb-3 block">Capabilities</span>
+            <h2 className="text-3xl font-bold mb-10 text-gray-100">
               What I Do
             </h2>
 

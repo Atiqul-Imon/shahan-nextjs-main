@@ -42,11 +42,9 @@ const ResearchSection = () => {
   return (
     <section className="py-20 bg-gray-900 border-t border-gray-800">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
-        <div className="flex items-center space-x-3 mb-12">
-          <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20">
-            <BookOpen className="text-blue-400 w-6 h-6" />
-          </div>
-          <h2 className="text-4xl font-bold text-gray-100">Research</h2>
+        <div className="text-center mb-12">
+          <span className="eyebrow mb-3 block">Academic Work</span>
+          <h2 className="text-4xl font-bold text-gray-100">Research & Publications</h2>
         </div>
 
         {/* Publications */}

@@ -36,9 +36,10 @@ const InitiativesSection = () => {
     <section className="py-20 bg-gray-900 border-t border-gray-800">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
+          <span className="eyebrow mb-3 block">Side Projects</span>
           <h2 className="text-4xl font-bold text-gray-100">Beyond Work</h2>
-          <p className="text-gray-400 mt-3 text-lg max-w-xl mx-auto">
-            Side projects and initiatives I&apos;m building outside of my day job.
+          <p className="text-gray-400 mt-3 max-w-xl mx-auto">
+            Initiatives I&apos;m building outside of my day job.
           </p>
         </div>
 
