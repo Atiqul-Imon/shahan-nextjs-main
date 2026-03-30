@@ -1,8 +1,9 @@
 'use client';
 
-import { FaSearch, FaDatabase, FaChartBar, FaGlobe, FaGithub, FaLinkedin, FaGoogle, FaBrain } from "react-icons/fa";
+import { FaDatabase, FaChartBar, FaGithub, FaLinkedin, FaGoogle, FaBrain } from "react-icons/fa";
 import { Download, ArrowRight } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 const Hero = () => {
   const downloadResume = () => {
@@ -41,47 +42,49 @@ const Hero = () => {
     }
   ];
 
-  const specialties = [
+  const pillars = [
     {
       icon: FaBrain,
-      title: "Data Scientist",
-      description: "Building ML models and advanced analytics solutions to solve complex problems.",
-      color: "text-orange-500",
+      title: "ML Engineering & NLP",
+      description: "Designing and deploying end-to-end NLP pipelines — from transformer fine-tuning to production model serving.",
+      bullets: [
+        "Transformer fine-tuning (DistilBERT, Longformer)",
+        "Document classification & OCR pipelines",
+        "Production model deployment (Docker, systemd, AWS)",
+      ],
+      color: "text-orange-400",
       bgColor: "bg-orange-500/10",
-      borderColor: "border-orange-500/20"
-    },
-    {
-      icon: FaSearch,
-      title: "Research Analyst",
-      description: "Expert at uncovering patterns in unstructured data to inform strategy.",
-      color: "text-blue-500",
-      bgColor: "bg-blue-500/10",
-      borderColor: "border-blue-500/20"
+      borderColor: "border-orange-500/20",
+      link: "/case-studies",
     },
     {
       icon: FaDatabase,
-      title: "Data Analyst",
-      description: "Skilled at analyzing large datasets to drive performance decisions.",
-      color: "text-green-500",
-      bgColor: "bg-green-500/10",
-      borderColor: "border-green-500/20"
+      title: "Healthcare & Public Health Analytics",
+      description: "Applying ML to healthcare data to surface patterns that improve patient outcomes and inform public health policy.",
+      bullets: [
+        "Cancer treatment pathway analysis (CMS Medicare data)",
+        "Vaccination coverage research (DHS data)",
+        "Federated learning & synthetic data for health equity",
+      ],
+      color: "text-blue-400",
+      bgColor: "bg-blue-500/10",
+      borderColor: "border-blue-500/20",
+      link: "/case-studies",
     },
     {
       icon: FaChartBar,
-      title: "BI Analyst",
-      description: "Creating dashboards and reports to visualize KPIs and metrics.",
-      color: "text-yellow-500",
-      bgColor: "bg-yellow-500/10",
-      borderColor: "border-yellow-500/20"
+      title: "Data Engineering & Infrastructure",
+      description: "Building reliable data pipelines and infrastructure that power analytics and ML systems at scale.",
+      bullets: [
+        "PySpark & Databricks pipelines",
+        "Delta Lake medallion architecture",
+        "AWS cloud services & MLflow experiment tracking",
+      ],
+      color: "text-green-400",
+      bgColor: "bg-green-500/10",
+      borderColor: "border-green-500/20",
+      link: "/case-studies",
     },
-    {
-      icon: FaGlobe,
-      title: "Market Research",
-      description: "Gathering insights on competitors and customer behavior trends.",
-      color: "text-purple-500",
-      bgColor: "bg-purple-500/10",
-      borderColor: "border-purple-500/20"
-    }
   ];
 
   return (
@@ -101,16 +104,20 @@ const Hero = () => {
             <h1 className="text-5xl md:text-7xl font-bold mb-6 text-gray-100">
               Shahan Ahmed
             </h1>
-            
-            <p className="text-xl md:text-2xl text-gray-400 mb-8 leading-relaxed">
-              Data Scientist & Machine Learning Engineer | Transforming data into insights, building innovative solutions, and creating meaningful digital experiences
+
+            <p className="text-xl md:text-2xl text-gray-400 mb-4 leading-relaxed">
+              Data Scientist &amp; ML Engineer specializing in NLP, document intelligence, and healthcare analytics — with published research and production systems processing millions of records.
+            </p>
+
+            <p className="text-sm md:text-base text-gray-500 mb-8 leading-relaxed italic">
+              Currently: Building production NLP systems at Conduent | Researching federated learning for public health | Creating ML tutorials on YouTube
             </p>
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
               <button
                 onClick={downloadResume}
-                className="group flex items-center space-x-3 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 font-semibold transition-all duration-300 shadow-soft hover:shadow-medium transform hover:scale-105"
+                className="group flex items-center space-x-3 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 font-semibold transition-all duration-300 shadow-soft hover:shadow-medium transform hover:scale-105 rounded-lg"
               >
                 <Download size={20} />
                 <span>Download Resume</span>
@@ -119,33 +126,45 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* Specialties Grid */}
+          {/* What I Do — 3 Pillars */}
           <div className="animate-slide-up w-full">
             <h2 className="text-3xl font-bold mb-12 text-gray-100">
-              Specializing in
+              What I Do
             </h2>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 lg:gap-8 max-w-[1600px] mx-auto px-4">
-              {specialties.map((specialty, index) => {
-                const Icon = specialty.icon;
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto px-4">
+              {pillars.map((pillar, index) => {
+                const Icon = pillar.icon;
                 return (
-                  <div
+                  <Link
                     key={index}
-                    className={`group p-6 lg:p-8 rounded-2xl border transition-all duration-300 hover:scale-105 hover:shadow-large ${specialty.bgColor} ${specialty.borderColor} backdrop-blur-sm min-h-[200px] flex flex-col`}
+                    href={pillar.link}
+                    className={`group p-6 lg:p-8 rounded-2xl border transition-all duration-300 hover:scale-105 hover:shadow-large ${pillar.bgColor} ${pillar.borderColor} backdrop-blur-sm flex flex-col text-left cursor-pointer`}
                     style={{ animationDelay: `${index * 0.1}s` }}
                   >
                     <div className="flex items-center mb-4">
-                      <div className={`p-3 lg:p-4 rounded-xl bg-gray-900/50 border-gray-700 border`}>
-                        <Icon className={`text-2xl lg:text-3xl ${specialty.color}`} />
+                      <div className="p-3 lg:p-4 rounded-xl bg-gray-900/50 border border-gray-700">
+                        <Icon className={`text-2xl lg:text-3xl ${pillar.color}`} />
                       </div>
                     </div>
                     <h3 className="text-lg lg:text-xl font-semibold text-gray-100 mb-3 group-hover:text-blue-200 transition-colors duration-200">
-                      {specialty.title}
+                      {pillar.title}
                     </h3>
-                    <p className="text-gray-400 leading-relaxed text-sm lg:text-base flex-grow">
-                      {specialty.description}
+                    <p className="text-gray-400 leading-relaxed text-sm lg:text-base mb-4">
+                      {pillar.description}
                     </p>
-                  </div>
+                    <ul className="space-y-2 flex-grow">
+                      {pillar.bullets.map((bullet, bIdx) => (
+                        <li key={bIdx} className="flex items-start space-x-2 text-sm text-gray-400">
+                          <span className={`mt-1 w-1.5 h-1.5 rounded-full flex-shrink-0 ${pillar.color.replace('text-', 'bg-')}`}></span>
+                          <span>{bullet}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <span className="mt-6 text-xs font-semibold uppercase tracking-widest text-gray-500 group-hover:text-blue-400 transition-colors duration-200">
+                      See case studies →
+                    </span>
+                  </Link>
                 );
               })}
             </div>
@@ -156,10 +175,11 @@ const Hero = () => {
             <h3 className="text-2xl font-semibold text-gray-100 mb-8">
               Connect with Me
             </h3>
-            
+
             <div className="flex flex-wrap justify-center items-center gap-6">
               {socialLinks.map((social, index) => {
-                const Icon = social.icon;
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const Icon = social.icon as any;
                 return (
                   <a
                     key={index}
@@ -170,7 +190,7 @@ const Hero = () => {
                     className={`group p-4 rounded-2xl transition-all duration-300 transform hover:scale-110 hover:shadow-glow ${social.bgColor} text-gray-100`}
                   >
                     {social.isImg ? (
-                      <Image src={social.icon} alt={social.name} width={24} height={24} className="transition-transform duration-200 group-hover:rotate-12" />
+                      <Image src={social.icon as string} alt={social.name} width={24} height={24} className="transition-transform duration-200 group-hover:rotate-12" />
                     ) : (
                       <Icon size={24} className="transition-transform duration-200 group-hover:rotate-12" />
                     )}
@@ -185,4 +205,4 @@ const Hero = () => {
   );
 };
 
-export default Hero; 
+export default Hero;

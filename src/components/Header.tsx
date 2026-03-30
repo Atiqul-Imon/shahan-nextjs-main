@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { Menu, X, LogOut, Home, Briefcase, MessageCircle, BarChart3, Calendar } from 'lucide-react';
+import { Menu, X, LogOut, Home, Briefcase, MessageCircle, BarChart3, Calendar, BookOpen, FlaskConical } from 'lucide-react';
 import AppointmentModal from './AppointmentModal';
 
 const Header = () => {
@@ -17,7 +17,7 @@ const Header = () => {
   useEffect(() => {
     // Set initial state to prevent flicker on mount
     setScrolled(window.scrollY > 10);
-    
+
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
     };
@@ -36,175 +36,151 @@ const Header = () => {
 
   const navItems = [
     { path: "/", label: "Home", icon: Home },
-    { path: "/project", label: "Projects", icon: Briefcase },
+    { path: "/case-studies", label: "Case Studies", icon: Briefcase },
+    { path: "/blog", label: "Blog", icon: BookOpen },
+    { path: "/research", label: "Research", icon: FlaskConical },
     { path: "/contact", label: "Contact", icon: MessageCircle },
   ];
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-150 ease-in-out ${
-      scrolled 
-        ? 'bg-gray-900 backdrop-blur-md shadow-lg border-b border-gray-700' 
-        : 'bg-gray-900/80 backdrop-blur-sm border-b border-gray-800/60'
-    }`}>
-      <div className="container mx-auto px-6 py-4">
-        <div className="flex justify-between items-center">
-          {/* Logo */}
-          <div className="flex items-center space-x-2">
-            <Link href="/" className="text-2xl font-bold tracking-wide cursor-pointer text-gray-100 hover:text-white transition-colors duration-200">
-              Shahan Ahmed
-            </Link>
-          </div>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.path}
-                  href={item.path}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 font-medium ${
-                    isActive(item.path)
-                      ? 'text-white bg-blue-600 shadow-soft'
-                      : 'text-gray-400 hover:text-white hover:bg-gray-800'
-                  }`}
-                >
-                  <Icon size={18} />
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
-
-            {/* Talk to Me Button */}
-            <button
-              onClick={() => setAppointmentModalOpen(true)}
-              className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold hover:shadow-lg transition-all duration-200"
-            >
-              <Calendar size={18} />
-              <span>Talk to Me</span>
-            </button>
-
-            {/* Auth Section - Only show when logged in */}
-            {!isLoading && isLogin ? (
-              <div className="flex items-center space-x-4 ml-4 pl-4 border-l border-gray-700">
-                <Link
-                  href="/dashboard"
-                  className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-gray-700 text-gray-200 hover:bg-gray-600 transition-all duration-200 font-medium"
-                >
-                  <BarChart3 size={18} />
-                  <span>Dashboard</span>
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-500/10 transition-all duration-200 font-medium"
-                >
-                  <LogOut size={18} />
-                  <span>Logout</span>
-                </button>
-              </div>
-            ) : !isLoading && !isLogin ? (
-              <Link
-                href="/login"
-                className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-all duration-200 font-medium ml-4"
-              >
-                <span>Login</span>
+    <>
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-150 ease-in-out ${
+        scrolled
+          ? 'bg-gray-900 backdrop-blur-md shadow-lg border-b border-gray-700'
+          : 'bg-gray-900/80 backdrop-blur-sm border-b border-gray-800/60'
+      }`}>
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex justify-between items-center">
+            {/* Logo */}
+            <div className="flex items-center space-x-2">
+              <Link href="/" className="text-2xl font-bold tracking-wide cursor-pointer text-gray-100 hover:text-white transition-colors duration-200">
+                Shahan Ahmed
               </Link>
-            ) : null}
-          </nav>
+            </div>
 
-          {/* Mobile Menu Button */}
-          <div className="lg:hidden">
-            <button
-              onClick={toggleMenu}
-              className="p-2 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors duration-200"
-              aria-label="Toggle menu"
-            >
-              {menuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </div>
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex items-center space-x-8">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.path}
+                    href={item.path}
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 font-medium ${
+                      isActive(item.path)
+                        ? 'text-white bg-blue-600 shadow-soft'
+                        : 'text-gray-400 hover:text-white hover:bg-gray-800'
+                    }`}
+                  >
+                    <Icon size={18} />
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
 
-        {/* Mobile Navigation */}
-        {menuOpen && (
-          <div className="mt-4 lg:hidden animate-slide-down">
-            <div className="bg-gray-800 rounded-xl shadow-large border border-gray-700 p-6">
-              <nav className="space-y-3">
-                {navItems.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.path}
-                      href={item.path}
-                      onClick={toggleMenu}
-                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 font-medium ${
-                        isActive(item.path)
-                          ? 'text-white bg-blue-600'
-                          : 'text-gray-300 hover:text-white hover:bg-gray-700'
-                      }`}
-                    >
-                      <Icon size={20} />
-                      <span>{item.label}</span>
-                    </Link>
-                  );
-                })}
+              {/* Auth Section - Only show when logged in */}
+              {!isLoading && isLogin ? (
+                <div className="flex items-center space-x-4 ml-4 pl-4 border-l border-gray-700">
+                  <Link
+                    href="/dashboard"
+                    className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-gray-700 text-gray-200 hover:bg-gray-600 transition-all duration-200 font-medium"
+                  >
+                    <BarChart3 size={18} />
+                    <span>Dashboard</span>
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-500/10 transition-all duration-200 font-medium"
+                  >
+                    <LogOut size={18} />
+                    <span>Logout</span>
+                  </button>
+                </div>
+              ) : null}
+            </nav>
 
-                {/* Mobile Talk to Me Button */}
-                <button
-                  onClick={() => {
-                    setAppointmentModalOpen(true);
-                    toggleMenu();
-                  }}
-                  className="flex items-center space-x-3 px-4 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold w-full"
-                >
-                  <Calendar size={20} />
-                  <span>Talk to Me</span>
-                </button>
-
-                {/* Mobile Auth Section - Only show when logged in */}
-                {!isLoading && isLogin ? (
-                  <div className="pt-3 border-t border-gray-700">
-                    <div className="space-y-3">
-                      <Link
-                        href="/dashboard"
-                        onClick={toggleMenu}
-                        className="flex items-center space-x-3 px-4 py-3 rounded-lg bg-gray-700 text-gray-200 font-medium"
-                      >
-                        <BarChart3 size={20} />
-                        <span>Dashboard</span>
-                      </Link>
-                      <button
-                        onClick={() => { handleLogout(); toggleMenu(); }}
-                        className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-500/10 font-medium"
-                      >
-                        <LogOut size={20} />
-                        <span>Logout</span>
-                      </button>
-                    </div>
-                  </div>
-                ) : !isLoading && !isLogin ? (
-                  <div className="pt-3 border-t border-gray-700">
-                    <Link
-                      href="/login"
-                      onClick={toggleMenu}
-                      className="flex items-center space-x-3 px-4 py-3 rounded-lg bg-blue-600 text-white font-medium"
-                    >
-                      <span>Login</span>
-                    </Link>
-                  </div>
-                ) : null}
-              </nav>
+            {/* Mobile Menu Button */}
+            <div className="lg:hidden">
+              <button
+                onClick={toggleMenu}
+                className="p-2 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors duration-200"
+                aria-label="Toggle menu"
+              >
+                {menuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
             </div>
           </div>
-        )}
-      </div>
 
-      {/* Appointment Modal */}
-      <AppointmentModal
-        isOpen={appointmentModalOpen}
-        onClose={() => setAppointmentModalOpen(false)}
-      />
-    </header>
+          {/* Mobile Navigation */}
+          {menuOpen && (
+            <div className="mt-4 lg:hidden animate-slide-down">
+              <div className="bg-gray-800 rounded-xl shadow-large border border-gray-700 p-6">
+                <nav className="space-y-3">
+                  {navItems.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <Link
+                        key={item.path}
+                        href={item.path}
+                        onClick={toggleMenu}
+                        className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 font-medium ${
+                          isActive(item.path)
+                            ? 'text-white bg-blue-600'
+                            : 'text-gray-300 hover:text-white hover:bg-gray-700'
+                        }`}
+                      >
+                        <Icon size={20} />
+                        <span>{item.label}</span>
+                      </Link>
+                    );
+                  })}
+
+                  {/* Mobile Auth Section - Only show when logged in */}
+                  {!isLoading && isLogin ? (
+                    <div className="pt-3 border-t border-gray-700">
+                      <div className="space-y-3">
+                        <Link
+                          href="/dashboard"
+                          onClick={toggleMenu}
+                          className="flex items-center space-x-3 px-4 py-3 rounded-lg bg-gray-700 text-gray-200 font-medium"
+                        >
+                          <BarChart3 size={20} />
+                          <span>Dashboard</span>
+                        </Link>
+                        <button
+                          onClick={() => { handleLogout(); toggleMenu(); }}
+                          className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-500/10 font-medium"
+                        >
+                          <LogOut size={20} />
+                          <span>Logout</span>
+                        </button>
+                      </div>
+                    </div>
+                  ) : null}
+                </nav>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Appointment Modal */}
+        <AppointmentModal
+          isOpen={appointmentModalOpen}
+          onClose={() => setAppointmentModalOpen(false)}
+        />
+      </header>
+
+      {/* Floating Talk to Me Button */}
+      <button
+        onClick={() => setAppointmentModalOpen(true)}
+        aria-label="Talk to Me"
+        className="fixed bottom-8 right-8 z-50 flex items-center space-x-2 px-5 py-3 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+      >
+        <Calendar size={20} />
+        <span>Talk to Me</span>
+      </button>
+    </>
   );
 };
 
-export default Header; 
+export default Header;

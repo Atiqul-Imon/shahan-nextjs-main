@@ -1,15 +1,21 @@
 'use client';
 
 import Hero from './Hero';
-import HomeProjectComponent from './HomeProjectComponent';
+import CaseStudiesSection from './CaseStudiesSection';
+import ResearchSection from './ResearchSection';
+import SocialProofSection from './SocialProofSection';
+import InitiativesSection from './InitiativesSection';
 
 const HomePage = () => {
   return (
     <>
       <Hero />
-      <HomeProjectComponent />
+      <CaseStudiesSection />
+      <ResearchSection />
+      <SocialProofSection />
+      <InitiativesSection />
     </>
   );
 };
 
-export default HomePage; 
+export default HomePage;
