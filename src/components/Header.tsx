@@ -50,23 +50,23 @@ const Header = () => {
           : 'bg-gray-900/80 backdrop-blur-sm border-b border-gray-800/60'
       }`}>
         <div className="container mx-auto px-6 py-4">
-          <div className="flex justify-between items-center">
+          <div className="relative flex justify-between items-center">
             {/* Logo */}
-            <div className="flex items-center space-x-2">
-              <Link href="/" className="text-2xl font-bold tracking-wide cursor-pointer text-gray-100 hover:text-white transition-colors duration-200">
+            <div className="flex items-center space-x-2 flex-shrink-0">
+              <Link href="/" className="text-xl font-bold tracking-wide cursor-pointer text-gray-100 hover:text-white transition-colors duration-200">
                 Shahan Ahmed
               </Link>
             </div>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center space-x-8">
+            {/* Desktop Navigation — centered */}
+            <nav className="hidden lg:flex items-center space-x-1 absolute left-1/2 -translate-x-1/2">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 return (
                   <Link
                     key={item.path}
                     href={item.path}
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 font-medium ${
+                    className={`flex items-center space-x-1.5 px-3 py-2 rounded-lg transition-all duration-200 font-medium text-sm ${
                       isActive(item.path)
                         ? 'text-white bg-blue-600 shadow-soft'
                         : 'text-gray-400 hover:text-white hover:bg-gray-800'
@@ -171,14 +171,18 @@ const Header = () => {
       </header>
 
       {/* Floating Talk to Me Button */}
-      <button
-        onClick={() => setAppointmentModalOpen(true)}
-        aria-label="Talk to Me"
-        className="fixed bottom-8 right-8 z-50 flex items-center space-x-2 px-5 py-3 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
-      >
-        <Calendar size={20} />
-        <span>Talk to Me</span>
-      </button>
+      <div className="fixed bottom-8 right-8 z-50 group">
+        <button
+          onClick={() => setAppointmentModalOpen(true)}
+          aria-label="Talk to Me"
+          className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 text-white shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300"
+        >
+          <Calendar size={20} />
+        </button>
+        <span className="absolute right-14 bottom-2 whitespace-nowrap bg-gray-800 text-gray-200 text-xs font-medium px-2.5 py-1.5 rounded-lg border border-gray-700 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+          Talk to Me
+        </span>
+      </div>
     </>
   );
 };

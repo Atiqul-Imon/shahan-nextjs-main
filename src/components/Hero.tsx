@@ -6,9 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 const Hero = () => {
-  const downloadResume = () => {
-    window.open('/api/download-resume', '_blank');
-  };
+  // Resume button navigates to /resume page (inline viewer)
 
   const socialLinks = [
     {
@@ -129,14 +127,14 @@ const Hero = () => {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-              <button
-                onClick={downloadResume}
+              <Link
+                href="/resume"
                 className="group flex items-center space-x-3 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 font-semibold transition-all duration-300 shadow-soft hover:shadow-medium transform hover:scale-105 rounded-lg"
               >
                 <Download size={20} />
-                <span>Download Resume</span>
+                <span>View Resume</span>
                 <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform duration-200" />
-              </button>
+              </Link>
             </div>
           </div>
 
