@@ -7,7 +7,12 @@ import Footer from '@/components/Footer'
 import { generateMetadata as genMeta, defaultSEO } from '@/lib/seo'
 import { PersonSchema, OrganizationSchema, ProfilePageSchema, ProfessionalServiceSchema } from '@/components/StructuredData'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+  weight: ['300', '400', '500', '600', '700', '800'],
+})
 
 export const metadata: Metadata = genMeta({
   title: 'Shahan Ahmed - Data Scientist & ML Engineer Portfolio',
@@ -38,14 +43,14 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en-US">
-      <body className={inter.className}>
+    <html lang="en-US" className={inter.variable}>
+      <body className="font-sans antialiased">
         <PersonSchema />
         <OrganizationSchema />
         <ProfilePageSchema />
         <ProfessionalServiceSchema />
         <AuthProvider>
-          <div className="min-h-screen bg-gray-900 text-gray-200">
+          <div className="min-h-screen bg-gray-900 text-gray-300">
             <Header />
             <main className="pt-20">
               {children}

@@ -1,15 +1,9 @@
 'use client';
 
 import Hero from './Hero';
-import HomeProjectComponent from './HomeProjectComponent';
 
 const HomePage = () => {
-  return (
-    <>
-      <Hero />
-      <HomeProjectComponent />
-    </>
-  );
+  return <Hero />;
 };
 
-export default HomePage; 
+export default HomePage;
