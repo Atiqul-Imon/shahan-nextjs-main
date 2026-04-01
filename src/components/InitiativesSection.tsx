@@ -55,7 +55,7 @@ const InitiativesSection = () => {
                 className={`group p-6 rounded-2xl border transition-all duration-300 hover:scale-105 hover:shadow-lg ${initiative.bgColor} ${initiative.borderColor} flex flex-col`}
               >
                 <div className="mb-4">
-                  {'logoImg' in initiative ? (
+                  {initiative.logoImg ? (
                     <Image
                       src={initiative.logoImg}
                       alt={initiative.title}
